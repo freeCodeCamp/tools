@@ -87,7 +87,7 @@ const getUserInput = async (rangeType = '') => {
 
 const getPRs = async (totalPRs, firstPR, lastPR, prPropsToGet) => {
   const getPRsBar = new _cliProgress.Bar({
-    format: `Part 1 of 2: Retrieving PRs (${firstPR}-${lastPR}) [{bar}] {percentage}%`
+    format: `Part 1 of 2: Retrieving PRs (${firstPR}-${lastPR}) [{bar}] {percentage}% - {duration_formatted}`
   }, _cliProgress.Presets.shades_classic);
   getPRsBar.start(totalPRs, 0);
   let openPRs = await paginate(octokit.pullRequests.list, octokit, firstPR, lastPR, prPropsToGet, getPRsBar);
