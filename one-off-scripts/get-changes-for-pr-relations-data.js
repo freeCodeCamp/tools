@@ -92,7 +92,7 @@ const log = new Log();
       format: `Part 2 of 2: Adding/Updating PRs [{bar}] {percentage}% | {value}/{total} | {duration_formatted}`
     }, _cliProgress.Presets.shades_classic);
     getFilesBar.start(openPRs.length, 0);
-    
+
     let newOrUpdated = '';
     for (let count in openPRs) {
       let { number, updated_at, user: { login: username } } = openPRs[count];
