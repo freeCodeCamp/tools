@@ -63,8 +63,14 @@ class Log {
   }
 };
 
-const { owner, repo, octokitConfig, octokitAuth } = require('../constants');
+const getExistingData = async () => {
+  const url = `https://perpetual-silverfish.glitch.me/getCurrData`;
+  const response = await fetch(url)
+  const data = await response.json();
+  return data;
+};
 
+const { owner, repo, octokitConfig, octokitAuth } = require('../constants');
 const octokit = require('@octokit/rest')(octokitConfig);
 
 const { getPRs, getUserInput } = require('../get-prs');
@@ -79,18 +85,32 @@ const log = new Log();
   const { openPRs } = await getPRs(totalPRs, firstPR, lastPR, prPropsToGet);
 
   if (openPRs.length) {
+   const { indices: oldIndices, prs: oldPRs } = await getExistingData();
+
     log.start();
     const getFilesBar = new _cliProgress.Bar({
-      format: `Part 2 of 2: Retrieving filenames [{bar}] {percentage}% | {value}/{total}`
+      format: `Part 2 of 2: Adding/Updating PRs [{bar}] {percentage}% | {value}/{total}`
     }, _cliProgress.Presets.shades_classic);
     getFilesBar.start(openPRs.length, 0);
     for (let count in openPRs) {
       let { number, updated_at, user: { login: username } } = openPRs[count];
-      const { data: prFiles } = await octokit.pullRequests.listFiles({ owner, repo, number });
-      const filenames = prFiles.map(({ filename }) => filename);
-      log.add(number, { number, updated_at, username, filenames });
-      if (+count > 3000 ) {
-        await rateLimiter(1500);
+      const {
+        updated_at: oldUpdatedAt,
+        username: oldUsername,
+        filenames: oldFilenames
+      } = oldPRs[oldIndices[number]];
+
+      if (!oldIndices[number] || updated_at > oldUpdatedAt) {
+        const { data: prFiles } = await octokit.pullRequests.listFiles({ owner, repo, number });
+        const filenames = prFiles.map(({ filename }) => filename);
+        log.add(number, { number, updated_at, username, filenames });
+        if (+count > 3000 ) {
+          await rateLimiter(1500);
+        }
+      }
+      else {
+        // use old data
+        log.add(number, { number, oldUpdated_at, oldUsername, oldFilenames });
       }
       if (+count % 10 === 0) {
         getFilesBar.update(+count);
