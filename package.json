@@ -1,33 +1,12 @@
 {
-  "name": "automation",
-  "version": "1.0.0",
-  "description": "Github bots and crawlers for FCC\r # github-bots",
-  "main": "index.js",
-  "dependencies": {
-    "@octokit/rest": "^15.18.0",
-    "cli-progress": "^2.1.0",
-    "date-fns": "^1.29.0",
-    "dedent": "^0.7.0",
-    "dotenv": "^6.1.0",
-    "gray-matter": "^4.0.1",
-    "lodash": "^4.17.11",
-    "path": "^0.12.7",
-    "readdirp-walk": "^1.6.0",
-    "travis-ci": "^2.2.0",
-    "util": "^0.11.1"
-  },
-  "devDependencies": {},
+  "name": "@freecodecamp/github-tools",
+  "description": "Tools to help maintain freecodecamp.org's Open Source Codebase on GitHub",
+  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "bootstrap": "lerna bootstrap",
+    "postinstall": "npm run bootstrap"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/RandellDawson/automation.git"
-  },
-  "author": "",
-  "license": "BSD-3-Clause",
-  "bugs": {
-    "url": "https://github.com/RandellDawson/automation/issues"
-  },
-  "homepage": "https://github.com/RandellDawson/automation#readme"
+  "devDependencies": {
+    "lerna": "^3.5.1"
+  }
 }
