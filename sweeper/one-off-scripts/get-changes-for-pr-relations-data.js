@@ -101,19 +101,26 @@ const log = new Log();
       if (oldPrData) {
         oldUpdated_at = oldPrData.updated_at;
       }
-
-      if (!oldIndices.hasOwnProperty(number) || updated_at > oldUpdated_at) {
-        newOrUpdated += `PR #${number} was new or needed updating\n`;
+      let updatePRData = false;
+      if (!oldIndices.hasOwnProperty(number)) {
+        updatePRData = true;
+        newOrUpdated += `PR #${number} added\n`;
+      }
+      else if (updated_at > oldUpdated_at) {
+        updatePRData = true;
+        newOrUpdated += `PR #${number} updated\n`;
+      }
+      else {
+        let { username: oldUsername, filenames: oldFilenames } = oldPrData;
+        log.add(number, { number, updated_at: oldUpdated_at, username: oldUsername, filenames: oldFilenames });
+      }
+      if (updatePRData) {
         const { data: prFiles } = await octokit.pullRequests.listFiles({ owner, repo, number });
         const filenames = prFiles.map(({ filename }) => filename);
         log.add(number, { number, updated_at, username, filenames });
         if (+count > 3000 ) {
           await rateLimiter(1400);
         }
-      }
-      else {
-        let { username: oldUsername, filenames: oldFilenames } = oldPrData;
-        log.add(number, { number, updated_at: oldUpdated_at, username: oldUsername, filenames: oldFilenames });
       }
       if (+count % 10 === 0) {
         getFilesBar.update(+count);

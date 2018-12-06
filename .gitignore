@@ -99,7 +99,7 @@ typings/
 # ------------
 
 # local-work-logs
-/work-logs/*
+sweeper/work-logs/*
 
 # local input files
 input-files/*
