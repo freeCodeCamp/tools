@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 
 const Container = styled.div`
@@ -11,42 +11,22 @@ const Info = styled.div`
   padding: 2px;
 `;
 
-class Footer extends Component {
-  state = {
-    numPRs: null,
-    prRange: null,
-    lastUpdate: null
-  }
+const Footer = (props) => {
 
-  componentDidMount() {
-    const baseUrl = 'https://pr-relations.glitch.me/';
-    const fetchUrl = baseUrl + 'info';
-    fetch(fetchUrl)
-    .then((response) => response.json())
-    .then(({ ok, numPRs, prRange, lastUpdate }) => {
-      if (ok) {
-        this.setState((prevState) => ({ numPRs, prRange, lastUpdate }));
-      }
-    })
-    .catch(() => {
-      // do nothing
-    });
-  }
-
-  localTime(lastUpdate) {
+  const localTime = (lastUpdate) => {
     const newTime = new Date(lastUpdate);
     return newTime.toLocaleString();
   }
 
-  render() {
-    const { numPRs, prRange, lastUpdate } = this.state;
-    return (
-      <Container>
-        <Info>Last Update: {this.localTime(lastUpdate)}</Info>
-        <Info># of open PRs: {numPRs} ({prRange})</Info>
-      </Container>
-    );
-  }
+  const { footerInfo: { numPRs, prRange, lastUpdate } } = props;
+  return (
+    lastUpdate &&
+    <Container>
+      <Info>Last Update: {localTime(lastUpdate)}</Info>
+      <Info># of open PRs: {numPRs} ({prRange})</Info>
+    </Container>
+  );
+
 };
 
 export default Footer;

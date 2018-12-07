@@ -4,8 +4,12 @@ const path = require('path');
 const fs = require('fs');
 const _cliProgress = require('cli-progress');
 const fetch = require('node-fetch');
+const FormData = require('form-data');
 
 const { saveToFile } = require('../utils/save-to-file');
+
+const glitchUrl = 'https://pr-relations.glitch.me';
+//const glitchUrl = 'https://fixed-healer.glitch.me';
 
 class Log {
   constructor() {
@@ -59,16 +63,16 @@ class Log {
   changeFilename( [first, last] ) {
     const now = formatDate(new Date(), 'YYYY-MM-DDTHHmmss');
     const newFilename = path.resolve(__dirname,`../work-logs/pr-relations_${first}-${last}_${now}.json`);
-    fs.rename(this._logfile, newFilename, function(err) {
-      if (err) {
-        throw('ERROR: ' + err);
-      }
-    });
+    fs.renameSync(this._logfile, newFilename);
+    if (!fs.existsSync(newFilename)) {
+      throw `Rename unsuccessful.`;
+    }
+    this._logfile = newFilename;
   }
 };
 
 const getExistingData = async () => {
-  const url = `https://pr-relations.glitch.me/getCurrData`;
+  const url = `${glitchUrl}/getCurrData`;
   const response = await fetch(url);
   const data = await response.json();
   return data ? data : { indices: {}, prs: [] };
@@ -134,9 +138,22 @@ const log = new Log();
     throw 'There were no open PRs received from Github';
   }
 })()
-.then(() => {
+.then(async () => {
   log.finish();
   console.log('Finished retrieving Dashboard data');
+
+  // const formData = new FormData();
+  // formData.append('file', fs.createReadStream(log._logfile));
+  // const result = await fetch(`${glitchUrl}/upload?password=${process.env.GLITCH_UPLOAD_SECRET}`, {
+  //   method: 'POST',
+  //   body: formData
+  // })
+  // .then(() => {
+  //   console.log('Finished uploading data to Glitch');
+  // })
+  // .catch((err) => {
+  //   console.log(err);
+  // });
 })
 .catch(err => {
   log.finish();

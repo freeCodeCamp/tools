@@ -42,16 +42,38 @@ const imgStyle = {
 
 class App extends Component {
   state = {
-    view: 'search'
+    view: 'search',
+    footerInfo: null
   };
+
+  updateInfo() {
+    const baseUrl = 'https://fixed-healer.glitch.me/';
+    const fetchUrl = baseUrl + 'info';
+    fetch(fetchUrl)
+    .then((response) => response.json())
+    .then(({ ok, numPRs, prRange, lastUpdate }) => {
+      if (ok) {
+      const footerInfo = { numPRs, prRange, lastUpdate };
+        this.setState((prevState) => ({ footerInfo }));
+      }
+    })
+    .catch(() => {
+      // do nothing
+    });
+  }
 
   handleViewChange = ( { target: { id } }) => {
     const view = id.replace('tabs-', '');
     this.setState((prevState) => ({ ...this.clearObj, view }));
+    this.updateInfo();
+  }
+
+  componentDidMount() {
+    this.updateInfo();
   }
 
   render() {
-    const { handleViewChange, state: { view } } = this;
+    const { handleViewChange, state: { view, footerInfo } } = this;
     return (
       <PageContainer>
         <Title><img style={imgStyle} src="https://discourse-user-assets.s3.dualstack.us-east-1.amazonaws.com/original/3X/e/d/ed1c70bda321aaeee9e6c20ab650ce8bc34899fa.svg" alt="Free Code Camp Logo" /> Moderator Tools</Title>
@@ -60,7 +82,7 @@ class App extends Component {
           { view === 'search' && <Search /> }
           { view === 'reports' && <Pareto /> }
         </Container>
-        <Footer />
+        { footerInfo && <Footer footerInfo={footerInfo}/> }
       </PageContainer>
     );
   }

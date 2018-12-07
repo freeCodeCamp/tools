@@ -31,7 +31,7 @@ class Pareto extends React.Component {
   };
 
   componentDidMount() {
-    fetch(`https://pr-relations.glitch.me/pareto`)
+    fetch(`https://fixed-healer.glitch.me/pareto`)
     .then((response) => response.json())
     .then(({ ok, pareto }) => {
       if (ok) {
