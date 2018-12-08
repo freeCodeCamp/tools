@@ -5,6 +5,8 @@ import PrResults from './PrResults';
 import FilenameResults from './FilenameResults';
 import SearchOption from './SearchOption';
 
+import { ENDPOINT_PR, ENDPOINT_SEARCH } from '../constants';
+
 class Search extends Component {
   state = {
     searchValue: '',
@@ -54,8 +56,9 @@ class Search extends Component {
 
   searchPRs = (value) => {
     const { selectedOption } = this.state;
-    const baseUrl = 'https://pr-relations.glitch.me/';
-    const fetchUrl = baseUrl + (selectedOption === 'pr' ? `pr/${value}` : `search/?value=${value}`);
+    const fetchUrl = selectedOption === 'pr' ?
+      `${ENDPOINT_PR}/${value}` :
+      `${ENDPOINT_SEARCH}/?value=${value}`;
 
     fetch(fetchUrl)
       .then((response) => response.json())
