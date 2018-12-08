@@ -13,16 +13,20 @@ const Result = styled.div`
 const List = styled.div`
   margin: 5px;
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
 `;
 
-const ListItem = styled.a`
-  flex-basis: 33%;
+const ListItem = styled.div`
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
   overflow: hidden;
 `;
 
+const prNumStyle = { flex: 1 };
+const usernameStyle = { flex: 1 };
+const titleStyle = { flex: 3 };
 const detailsStyle = { padding: '3px' };
-
 const filenameTitle = { fontWeight: '600' };
 
 class Pareto extends React.Component {
@@ -31,7 +35,7 @@ class Pareto extends React.Component {
   };
 
   componentDidMount() {
-    fetch(`https://fixed-healer.glitch.me/pareto`)
+    fetch(`https://pr-relations.glitch.me/pareto`)
     .then((response) => response.json())
     .then(({ ok, pareto }) => {
       if (ok) {
@@ -51,17 +55,22 @@ class Pareto extends React.Component {
     const { data } = this.state;
     const elements = data.map((entry) => {
       const { filename, count, prs } = entry;
-      const prsList = prs.map(({ number, username }) => {
+      const prsList = prs.map(({ number, username, title }) => {
         const prUrl = `https://github.com/freeCodeCamp/freeCodeCamp/pull/${number}`;
         return (
-          <ListItem href={prUrl} rel="noopener noreferrer" target="_blank">
-            #{number} <span>({username})</span>
+          <ListItem>
+            <a style={prNumStyle} href={prUrl} rel="noopener noreferrer" target="_blank">
+              #{number}
+            </a>
+            <span style={usernameStyle}>{username}</span>
+            <span style={titleStyle}>{title}</span>
           </ListItem>
         )
       });
+      const fileOnMaster = `https://github.com/freeCodeCamp/freeCodeCamp/blob/master/${filename}`;
       return (
         <Result key={filename}>
-          <span style={filenameTitle}>{filename}</span><br />
+          <span style={filenameTitle}>{filename}</span> <a href={fileOnMaster} rel="noopener noreferrer" target="_blank">(File on Master)</a><br />
           <details style={detailsStyle}>
             <summary># of PRs: {count}</summary>
             <List>{prsList}</List>

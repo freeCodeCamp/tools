@@ -47,7 +47,7 @@ class App extends Component {
   };
 
   updateInfo() {
-    const baseUrl = 'https://fixed-healer.glitch.me/';
+    const baseUrl = 'https://pr-relations.glitch.me/';
     const fetchUrl = baseUrl + 'info';
     fetch(fetchUrl)
     .then((response) => response.json())

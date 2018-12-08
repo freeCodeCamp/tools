@@ -9,11 +9,26 @@ const List = styled.ul`
   margin: 3px;
 `;
 
+const PrInfo = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+`;
+
+const prNumStyle = { flex: 1 };
+const usernameStyle = { flex: 1 };
+const titleStyle = { flex: 3 };
+
 const PrResults = ({ searchValue, results }) => {
   const elements = results.map((result, idx) => {
-    const { number, filenames, username } = result;
+    const { number, filenames, username, title } = result;
     const files = filenames.map((filename, index) => {
-      return <li key={`${number}-${index}`}>{filename}</li>;
+      const fileOnMaster = `https://github.com/freeCodeCamp/freeCodeCamp/blob/master/${filename}`;
+      return (
+        <li key={`${number}-${index}`}>
+          {filename}> <a href={fileOnMaster} rel="noopener noreferrer" target="_blank">(File on Master)</a>
+        </li>
+      );
     });
     const prUrl = `https://github.com/freeCodeCamp/freeCodeCamp/pull/${number}`
 
@@ -21,10 +36,11 @@ const PrResults = ({ searchValue, results }) => {
       <Container key={`${number}-${idx}`}>
         {!Number(number)
           ? number
-          : <>
-              <a href={prUrl} rel="noopener noreferrer" target="_blank">{number}</a>
-              <span>&nbsp;{username}</span>
-            </>
+          : <PrInfo>
+              <a style={prNumStyle} href={prUrl} rel="noopener noreferrer" target="_blank">{number}</a>
+              <span style={usernameStyle}>{username}</span>
+              <span style={titleStyle}>{title}</span>
+            </PrInfo>
         }
         <List>
           {files}

@@ -1,4 +1,5 @@
-require('dotenv').config({ path: '../.env' });
+const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, `../.env` });
 const formatDate = require('date-fns/format');
 const path = require('path');
 const fs = require('fs');
@@ -9,7 +10,6 @@ const FormData = require('form-data');
 const { saveToFile } = require('../utils/save-to-file');
 
 const glitchUrl = 'https://pr-relations.glitch.me';
-//const glitchUrl = 'https://fixed-healer.glitch.me';
 
 class Log {
   constructor() {
@@ -94,7 +94,7 @@ const log = new Log();
   if (!oldPRs.length) {
      console.log('No existing PRs data found, so it will take a while to download PRs/filenames data.');
   }
-  const prPropsToGet = ['number', 'user', 'updated_at', 'files'];
+  const prPropsToGet = ['number', 'user', 'title', 'updated_at', 'files'];
   const { openPRs } = await getPRs(totalPRs, firstPR, lastPR, prPropsToGet);
 
   if (openPRs.length) {
@@ -106,7 +106,7 @@ const log = new Log();
 
     let prsUpdated = '';
     for (let count in openPRs) {
-      let { number, updated_at, user: { login: username } } = openPRs[count];
+      let { number, updated_at, title, user: { login: username } } = openPRs[count];
       let oldUpdated_at;
       let oldPrData = oldPRs[oldIndices[number]];
       if (oldPrData) {
@@ -115,15 +115,15 @@ const log = new Log();
       if (!oldIndices.hasOwnProperty(number) || updated_at > oldUpdated_at) {
         const { data: prFiles } = await octokit.pullRequests.listFiles({ owner, repo, number });
         const filenames = prFiles.map(({ filename }) => filename);
-        log.add(number, { number, updated_at, username, filenames });
+        log.add(number, { number, updated_at, title, username, filenames });
         if (+count > 3000 ) {
           await rateLimiter(1400);
         }
         prsUpdated += `PR #${number} added or updated\n`;
       }
       else {
-        let { username: oldUsername, filenames: oldFilenames } = oldPrData;
-        log.add(number, { number, updated_at: oldUpdated_at, username: oldUsername, filenames: oldFilenames });
+        let { username: oldUsername, title: oldTitle, filenames: oldFilenames } = oldPrData;
+        log.add(number, { number, updated_at: oldUpdated_at, username: oldUsername, title: oldTitle, filenames: oldFilenames });
       }
 
       if (+count % 10 === 0) {
@@ -142,18 +142,18 @@ const log = new Log();
   log.finish();
   console.log('Finished retrieving Dashboard data');
 
-  // const formData = new FormData();
-  // formData.append('file', fs.createReadStream(log._logfile));
-  // const result = await fetch(`${glitchUrl}/upload?password=${process.env.GLITCH_UPLOAD_SECRET}`, {
-  //   method: 'POST',
-  //   body: formData
-  // })
-  // .then(() => {
-  //   console.log('Finished uploading data to Glitch');
-  // })
-  // .catch((err) => {
-  //   console.log(err);
-  // });
+  const formData = new FormData();
+  formData.append('file', fs.createReadStream(log._logfile));
+  const result = await fetch(`${glitchUrl}/upload?password=${process.env.GLITCH_UPLOAD_SECRET}`, {
+    method: 'POST',
+    body: formData
+  })
+  .then(() => {
+    console.log('Finished uploading data to Glitch');
+  })
+  .catch((err) => {
+    console.log(err);
+  });
 })
 .catch(err => {
   log.finish();
