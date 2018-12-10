@@ -11,14 +11,22 @@ Promise = require('bluebird'); // eslint-disable-line no-global-assign
 mongoose.Promise = Promise;
 
 const app = express();
-const { catchAll, pareto, pr, search, info, updateData } = require('./routes');
+const { 
+  catchAll,
+  pareto,
+  pr,
+  search,
+  info,
+  getCurrData,
+  probot
+} = require('./routes');
 
 /*
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 */
-app.use(express.static(path.join(__dirname, '../dashboard-client/public')));
+app.use(express.static(path.resolve(__dirname, 'public')));
 app.use((request, response, next) => {
   response.header('Access-Control-Allow-Origin', '*');
   response.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
@@ -26,13 +34,14 @@ app.use((request, response, next) => {
   next();
 });
 
-app.get('/', (request, response) => response.sendFile(path.resolve(__dirname, '..', '/dashboard-client/public/index.html')));
+app.get('/', (request, response) => response.status(200).sendFile(path.join(__dirname + 'index.html')));
 
 app.use('/pr', pr);
 app.use('/search', search);
 app.use('/pareto', pareto);
 app.use('/info', info);
-app.use('/update', updateData);
+app.use('/getCurrData', getCurrData);
+//app.use('/probot', probot);
 app.use('*', catchAll);
 
 // connect to mongo db
@@ -45,3 +54,5 @@ mongoose.connection.on('error', () => {
 const listener = app.listen(config.port, () => {
   console.log('Your app is listening on port ' + listener.address().port);
 });
+
+module.exports = app;

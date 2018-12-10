@@ -1,6 +1,8 @@
 const router = require('express').Router();
 
-const container = require ('../data');
+//const { indices, prs } = require('../data.json');
+const prs = []
+const startTime = new Date()
 
 router.get('/', (reqeust, response) => {
   const { indices, prs } = container.data;
