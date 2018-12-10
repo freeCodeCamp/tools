@@ -2,11 +2,30 @@
   "name": "@freecodecamp/github-tools",
   "description": "Tools to help maintain freecodecamp.org's Open Source Codebase on GitHub",
   "private": true,
+  "bin": {
+    "presolver": "probot/index.js"
+  },
   "scripts": {
     "bootstrap": "lerna bootstrap",
-    "postinstall": "npm run bootstrap"
+    "postinstall": "npm run bootstrap",
+    "start": "./dashboard-api/server.js",
+    "dev": "nodemon"
   },
   "devDependencies": {
-    "lerna": "^3.5.1"
+    "lerna": "^3.5.1",
+    "presolver": "file:probot"
+  },
+  "nodemonConfig": {
+    "exec": "npm start",
+    "watch": [
+      ".env",
+      "."
+    ]
+  },
+  "probot": {
+    "apps": [
+      "presolver"
+    ]
   }
 }
+

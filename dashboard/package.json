@@ -3,31 +3,20 @@
   "private": true,
   "main": "server.js",
   "scripts": {
-    "start": "node server.js || cd ../dashboard-client && react-scripts start"
+    "start": "node server.js"
   },
   "dependencies": {
     "express": "^4.16.3",
-    "pug": "^2.0.3",
     "react": "^16.6.3",
     "react-dom": "^16.6.3",
     "react-scripts": "2.1.1",
-    "styled-components": "^4.1.1"
-  },
-  "devDependencies": {
+    "styled-components": "^4.1.1",
     "dotenv": "^6.2.0",
     "joi": "^14.3.0",
     "mongoose": "^5.3.15",
     "shelljs": "^0.8.3"
   },
-  "engines": {
-    "node": ">= 8.3.0"
-  },
-  "nodemonConfig": {
-    "exec": "npm start",
-    "watch": [
-      ".env",
-      "."
-    ]
+  "devDependencies": {
   },
   "license": "BSD-3-Clause"
 }
