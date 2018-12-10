@@ -6,8 +6,7 @@ const _cliProgress = require('cli-progress');
 const fetch = require('node-fetch');
 const FormData = require('form-data');
 
-//const glitchUrl = 'https://pr-relations.glitch.me';
-const glitchUrl = 'https://fixed-healer.glitch.me';
+const glitchUrl = 'https://pr-relations.glitch.me';
 
 const getExistingData = async () => {
   const url = `${glitchUrl}/getCurrData`;

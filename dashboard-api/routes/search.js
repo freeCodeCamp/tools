@@ -1,10 +1,11 @@
-
-const { indices, prs } = require('../data.json');
 const router = require('express').Router();
 
+const container = require ('../data');
+
 router.get('/', (request, response) => {
+  const { indices, prs } = container.data;
   const value  = request.query.value;
-  
+
   if (value) {
     const filesFound = {};
 
@@ -13,11 +14,13 @@ router.get('/', (request, response) => {
         if (filename.toLowerCase().includes(value.toLowerCase())) {
           const prObj = {
             number,
-            fileCount: prs[indices[number]].filenames.length
+            fileCount: prs[indices[number]].filenames.length,
+            username,
+            title
           };
 
           if (filesFound.hasOwnProperty(filename)) {
-            filesFound[filename].push(prObj);        
+            filesFound[filename].push(prObj);
           }
           else {
             filesFound[filename] = [prObj]

@@ -1,15 +1,17 @@
-const { indices, prs } = require('../data.json');
 const router = require('express').Router();
 
+const container = require('../data');
+
 router.get('/:number', (request, response) => {
+  const { indices, prs } = container.data;
   const { number: refNumber } = request.params;
   const index = indices[refNumber];
-  
-  if (!index) {
-    response.json({ ok: true, message: 'Not a valid PR #.', results: [] });
+
+  if (!index && index !== 0) {
+    response.json({ ok: true, message: 'Unable to find that open PR #.', results: [] });
     return;
   }
-  
+
   const pr = prs[index];
   const results = [];
   const { filenames: refFilenames } = pr;
@@ -25,9 +27,9 @@ router.get('/:number', (request, response) => {
       }
     }
   });
-  
+
   if (!results.length) {
-    response.json({ ok: true, message: 'No matching results.', results: [] });
+    response.json({ ok: true, message: 'No other open PRs with at least one file as this PR#.', results: [] });
     return;
   }
 
