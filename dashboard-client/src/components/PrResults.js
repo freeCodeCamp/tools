@@ -1,23 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const Container = styled.div`
-  margin-bottom: 15px;
-`;
+import ListItem from './ListItem';
+import FullWidthDiv from './FullWidthDiv';
+import Result from './Result';
 
 const List = styled.ul`
   margin: 3px;
 `;
-
-const PrInfo = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-`;
-
-const prNumStyle = { flex: 1 };
-const usernameStyle = { flex: 1 };
-const titleStyle = { flex: 3 };
 
 const PrResults = ({ searchValue, results }) => {
   const elements = results.map((result, idx) => {
@@ -26,34 +16,30 @@ const PrResults = ({ searchValue, results }) => {
       const fileOnMaster = `https://github.com/freeCodeCamp/freeCodeCamp/blob/master/${filename}`;
       return (
         <li key={`${number}-${index}`}>
-          {filename}> <a href={fileOnMaster} rel="noopener noreferrer" target="_blank">(File on Master)</a>
+          {filename} <a href={fileOnMaster} rel="noopener noreferrer" target="_blank">(File on Master)</a>
         </li>
       );
     });
-    const prUrl = `https://github.com/freeCodeCamp/freeCodeCamp/pull/${number}`
 
     return (
-      <Container key={`${number}-${idx}`}>
-        {!Number(number)
-          ? number
-          : <PrInfo>
-              <a style={prNumStyle} href={prUrl} rel="noopener noreferrer" target="_blank">{number}</a>
-              <span style={usernameStyle}>{username}</span>
-              <span style={titleStyle}>{title}</span>
-            </PrInfo>
-        }
+      <Result key={`${number}-${idx}`}>
+        <ListItem
+          number={number}
+          username={username}
+          prTitle={title}
+        />
         <List>
           {files}
         </List>
-      </Container>
+      </Result>
     );
   });
 
   return (
-    <div>
+    <FullWidthDiv style={{width: '100%'}}>
       {results.length ? <h3>Results for PR# {searchValue}</h3> : null}
       {elements}
-    </div>
+    </FullWidthDiv>
   );
 };
 
