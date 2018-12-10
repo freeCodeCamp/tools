@@ -20,7 +20,7 @@ class Pareto extends React.Component {
   };
 
   componentDidMount() {
-    fetch(`https://pr-relations.glitch.me/pareto`)
+    fetch(`http://127.0.0.1:49505/pareto`)
     .then((response) => response.json())
     .then(({ ok, pareto }) => {
       if (ok) {

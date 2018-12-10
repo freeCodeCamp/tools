@@ -9,7 +9,7 @@ router.get('/', (request, response) => {
   if (value) {
     const filesFound = {};
 
-    prs.forEach(({ number, filenames }) => {
+    prs.forEach(({ number, filenames, username, title }) => {
       filenames.forEach((filename) => {
         if (filename.toLowerCase().includes(value.toLowerCase())) {
           const prObj = {

@@ -47,7 +47,7 @@ class App extends Component {
   };
 
   updateInfo() {
-    const baseUrl = 'https://pr-relations.glitch.me/';
+    const baseUrl = 'http://127.0.0.1:49505/';
     const fetchUrl = baseUrl + 'info';
     fetch(fetchUrl)
     .then((response) => response.json())

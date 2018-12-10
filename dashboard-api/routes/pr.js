@@ -16,14 +16,14 @@ router.get('/:number', (request, response) => {
   const results = [];
   const { filenames: refFilenames } = pr;
 
-  prs.forEach(({ number, filenames, username }) => {
+  prs.forEach(({ number, filenames, username, title }) => {
     if (number != refNumber) {
       const matchedFilenames = filenames.filter((filename) => {
         return refFilenames.includes(filename);
       });
 
       if (matchedFilenames.length) {
-        results.push({ number, filenames: matchedFilenames, username });
+        results.push({ number, filenames: matchedFilenames, username, title });
       }
     }
   });

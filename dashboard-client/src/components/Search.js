@@ -48,7 +48,7 @@ class Search extends Component {
 
   searchPRs = (value) => {
     const { selectedOption } = this.state;
-    const baseUrl = 'https://pr-relations.glitch.me/';
+    const baseUrl = 'http://127.0.0.1:49505/';
     const fetchUrl = baseUrl + (selectedOption === 'pr' ? `pr/${value}` : `search/?value=${value}`);
     fetch(fetchUrl)
     .then((response) => response.json())

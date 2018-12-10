@@ -12,8 +12,6 @@ app.use((request, response, next) => {
   next();
 });
 
-app.get('/', (request, response) => response.sendFile(__dirname + '/views/index.html'));
-
 app.use('/pr', pr);
 app.use('/search', search);
 app.use('/pareto', pareto);
