@@ -92,7 +92,7 @@ typings/
 /coverage
 
 # production
-/build
+dashboard-client/build
 
 # ------------
 # Custom Files
@@ -102,4 +102,4 @@ typings/
 sweeper/work-logs/*
 
 # local input files
-input-files/*
+sweeper/input-files/*

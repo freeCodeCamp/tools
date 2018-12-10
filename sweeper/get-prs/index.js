@@ -87,7 +87,7 @@ const getUserInput = async (rangeType = '') => {
 
 const getPRs = async (totalPRs, firstPR, lastPR, prPropsToGet) => {
   const getPRsBar = new _cliProgress.Bar({
-    format: `Part 1 of 2: Retrieve PRs (${firstPR}-${lastPR}) [{bar}] {percentage}% | Elapsed Time: {duration_formatted} | ETA: {eta_formatted}`,
+    format: `Retrieve PRs (${firstPR}-${lastPR}) [{bar}] {percentage}% | Elapsed Time: {duration_formatted} | ETA: {eta_formatted}`,
     etaBuffer: 50
   }, _cliProgress.Presets.shades_classic);
   getPRsBar.start(totalPRs, 0);
