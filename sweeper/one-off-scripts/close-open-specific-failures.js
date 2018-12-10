@@ -29,7 +29,7 @@ const getUserInput = async () => {
   const lastPR = prs[prs.length - 1].number;
   for (let { number, errorDesc } of prs) {
     if (errorDesc !== "unknown error") {
-      log.add(number, { number, numberclosedOpened: true, errorDesc });
+      log.add(number, { number, closedOpened: true, errorDesc });
       if (process.env.PRODUCTION_RUN === 'true') {
          await closeOpen(number);
          await rateLimiter(90000);
