@@ -3,7 +3,7 @@
   "private": true,
   "main": "server.js",
   "scripts": {
-    "start": "node server.js || cd ../dashboard-client && react-scripts start"
+    "start": "node server.js && cd ../dashboard-client npm build && npm start"
   },
   "dependencies": {
     "express": "^4.16.3",

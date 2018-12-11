@@ -26,7 +26,7 @@ const {
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 */
-app.use(express.static(path.join(__dirname, '../dashboard-client/public')));
+app.use(express.static(path.join(__dirname, '../dashboard-client/build')));
 app.use((request, response, next) => {
   response.header('Access-Control-Allow-Origin', '*');
   response.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
@@ -34,7 +34,7 @@ app.use((request, response, next) => {
   next();
 });
 
-app.get('/', (request, response) => response.sendFile(path.resolve(__dirname, '..', '/dashboard-client/public/index.html')));
+app.get('/', (request, response) => response.sendFile(path.resolve(__dirname, '..', '/dashboard-client/build/index.html')));
 
 app.use('/pr', pr);
 app.use('/search', search);

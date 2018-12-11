@@ -1,39 +1,45 @@
-//const { indices, prs } = require('../data.json');
-const prs = []
-const startTime = new Date()
 const router = require('express').Router();
+const PR = require('../models/pr.js');
+const startTime = new Date()
 
 router.get('/:number', (request, response) => {
   const { number: refNumber } = request.params;
-  const index = indices[refNumber];
-  
-  if (!index) {
-    response.json({ ok: true, message: 'Not a valid PR #.', results: [] });
-    return;
-  }
-  
-  const pr = prs[index];
-  const results = [];
-  const { filenames: refFilenames } = pr;
-
-  prs.forEach(({ number, filenames, username }) => {
-    if (number != refNumber) {
-      const matchedFilenames = filenames.filter((filename) => {
-        return refFilenames.includes(filename);
-      });
-
-      if (matchedFilenames.length) {
-        results.push({ number, filenames: matchedFilenames, username });
-      }
+  PR.find({}, (err, prs) => {
+    if (err) {
+      // TODO: better err handler
+      console.log(err)
     }
-  });
-  
-  if (!results.length) {
-    response.json({ ok: true, message: 'No matching results.', results: [] });
-    return;
-  }
+    const indices = prs.map(pr => pr.number);
+    const index = indices[refNumber];
+    
+    if (!index) {
+      response.json({ ok: true, message: 'Not a valid PR #.', results: [] });
+      return;
+    }
+    
+    const pr = prs[index];
+    const results = [];
+    const { filenames: refFilenames } = pr;
 
-  response.json({ ok: true, results });
+    prs.forEach(({ number, filenames, username }) => {
+      if (number != refNumber) {
+        const matchedFilenames = filenames.filter((filename) => {
+          return refFilenames.includes(filename);
+        });
+
+        if (matchedFilenames.length) {
+          results.push({ number, filenames: matchedFilenames, username });
+        }
+      }
+    });
+    
+    if (!results.length) {
+      response.json({ ok: true, message: 'No matching results.', results: [] });
+      return;
+    }
+
+    response.json({ ok: true, results });
+  });
 });
 
 module.exports = router;
