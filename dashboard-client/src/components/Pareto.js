@@ -21,6 +21,7 @@ class Pareto extends React.Component {
   };
 
   componentDidMount() {
+<<<<<<< HEAD
     fetch(ENDPOINT_PARETO)
       .then((response) => response.json())
       .then(({ ok, pareto }) => {
@@ -29,6 +30,17 @@ class Pareto extends React.Component {
             pareto.push({ filename: 'Nothing to show in Pareto Report', count: 0, prs: [] });
           }
           this.setState((prevState) => ({ data: pareto }));
+=======
+    fetch(`/pareto`)
+    .then((response) => {
+      console.log(response)
+      response.json()
+    })
+    .then(({ ok, pareto }) => {
+      if (ok) {
+        if (!pareto.length) {
+          pareto.push({ filename: 'Nothing to show in Pareto Report', count: 0, prs: [] });
+>>>>>>> remove dashboard folder (extra folder)
         }
       })
       .catch(() => {
