@@ -1,8 +1,6 @@
-
-//const { indices, prs } = require('../data.json');
-const prs = []
-const startTime = new Date()
 const router = require('express').Router();
+const PR = require('../models/pr.js');
+const startTime = new Date()
 
 const container = require ('../data');
 
@@ -12,37 +10,40 @@ router.get('/', (request, response) => {
 
   if (value) {
     const filesFound = {};
+    PR.find({}, (err, prs) => {
+      if (err) {
+        // TODO: better err handler
+        console.log(err)
+      }
+      prs.forEach(({ number, filenames }) => {
+        filenames.forEach((filename) => {
+          if (filename.toLowerCase().includes(value.toLowerCase())) {
+            const prObj = {
+              number,
+              fileCount: prs[indices[number]].filenames.length
+            };
 
-    prs.forEach(({ number, filenames, username, title }) => {
-      filenames.forEach((filename) => {
-        if (filename.toLowerCase().includes(value.toLowerCase())) {
-          const prObj = {
-            number,
-            fileCount: prs[indices[number]].filenames.length,
-            username,
-            title
-          };
-
-          if (filesFound.hasOwnProperty(filename)) {
-            filesFound[filename].push(prObj);
+            if (filesFound.hasOwnProperty(filename)) {
+              filesFound[filename].push(prObj);        
+            }
+            else {
+              filesFound[filename] = [prObj]
+            }
           }
-          else {
-            filesFound[filename] = [prObj]
-          }
-        }
+        });
       });
-    });
 
-    let results = Object.keys(filesFound)
-      .map((filename) => ({ filename, prs: filesFound[filename] }))
-      .sort((a, b) => a.filename === b.filename ? 0 : a.filename < b.filename ? -1 : 1);
+      let results = Object.keys(filesFound)
+        .map((filename) => ({ filename, prs: filesFound[filename] }))
+        .sort((a, b) => a.filename === b.filename ? 0 : a.filename < b.filename ? -1 : 1);
 
-    if (!results.length) {
-      response.json({ ok: true, message: 'No matching results.', results: [] });
-      return;
-    }
+      if (!results.length) {
+        response.json({ ok: true, message: 'No matching results.', results: [] });
+        return;
+      }
 
-    response.json({ ok: true, results });
+      response.json({ ok: true, results });
+    })
   }
 });
 

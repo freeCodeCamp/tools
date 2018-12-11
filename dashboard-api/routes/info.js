@@ -1,20 +1,23 @@
-//const { prs, startTime } = require('../data.json');
-const prs = []
+const PR = require('../models/pr.js');
+// TODO: get startTime from (which?) mongoose model
 const startTime = new Date()
 const router = require('express').Router();
 
-const firstPR = 0//prs[0].number;
-const lastPR = 0//prs[prs.length - 1].number;
 router.get('/', (request, response) => {
-  const { prs, startTime } = container.data;
-  const firstPR = prs[0].number;
-  const lastPR = prs[prs.length - 1].number;
+  PR.find({}, (err, prs) => {
+    if (err) {
+      // TODO: better err handler
+      console.log(err)
+    }
+    const firstPR = prs[0].number;
+    const lastPR = prs[prs.length - 1].number;
 
-  response.json({
-    ok: true,
-    lastUpdate: startTime,
-    numPRs: prs.length,
-    prRange: `${firstPR}-${lastPR}`
+    response.json({
+      ok: true,
+      lastUpdate: startTime,
+      numPRs: prs.length,
+      prRange: `${firstPR}-${lastPR}`
+    });
   });
 });
 
