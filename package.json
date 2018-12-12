@@ -8,8 +8,9 @@
   "scripts": {
     "bootstrap": "lerna bootstrap",
     "postinstall": "npm run bootstrap",
-    "start": "./dashboard-api/server.js",
-    "dev": "nodemon"
+    "start": "lerna run start",
+    "dev": "nodemon",
+    "presolver": "lerna run presolver"
   },
   "devDependencies": {
     "lerna": "^3.5.1",

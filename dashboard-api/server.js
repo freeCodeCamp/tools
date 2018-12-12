@@ -41,7 +41,7 @@ app.use('/search', search);
 app.use('/pareto', pareto);
 app.use('/info', info);
 app.use('/getCurrData', getCurrData);
-//app.use('/probot', probot);
+app.use('/probot', probot);
 app.use('*', catchAll);
 
 // connect to mongo db
