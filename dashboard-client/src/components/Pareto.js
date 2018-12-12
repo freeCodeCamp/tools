@@ -6,7 +6,6 @@ import FullWidthDiv from './FullWidthDiv';
 import Result from './Result';
 import { ENDPOINT_PARETO } from '../constants';
 
-
 const List = styled.div`
   margin: 5px;
   display: flex;
