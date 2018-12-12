@@ -29,7 +29,7 @@ router.get('/:number', (request, response) => {
   });
 
   if (!results.length) {
-    response.json({ ok: true, message: `No other open PRs with at least one filename which PR #${number} has.`, results: [] });
+    response.json({ ok: true, message: `No other open PRs with at least one filename which PR #${refNumber} has.`, results: [] });
     return;
   }
 
