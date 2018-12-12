@@ -1,15 +1,18 @@
 const path = require('path');
-require('dotenv').config({ path: '../.env' });
+// require('dotenv').config({ path: '../.env' });
+require('dotenv').config();
 const formatDate = require('date-fns/format');
 const fs = require('fs');
 const _cliProgress = require('cli-progress');
 const fetch = require('node-fetch');
 const FormData = require('form-data');
 
-const glitchUrl = 'http://127.0.0.1:49505';
+const HOST = process.env.NODE_DEV
+  ? process.env.LOCAL_HOST
+  : process.env.GLITCH_API_URL;
 
 const getExistingData = async () => {
-  const url = `${glitchUrl}/getCurrData`;
+  const url = `${HOST}/getCurrData`;
   const response = await fetch(url);
   const data = await response.json();
   return data ? data : { indices: {}, prs: [] };
@@ -81,12 +84,12 @@ const log = new ProcessingLog('pr-relations');
 
   const formData = new FormData();
   formData.append('file', fs.createReadStream(log._logfile));
-  const result = await fetch(`${glitchUrl}/upload?password=${process.env.GLITCH_UPLOAD_SECRET}`, {
+  const result = await fetch(`${HOST}/upload?password=${process.env.GLITCH_UPLOAD_SECRET}`, {
     method: 'POST',
     body: formData
   })
   .then(() => {
-    console.log(`Finished uploading data for ${glitchUrl}`);
+    console.log(`Finished uploading data for ${HOST}`);
   })
   .catch((err) => {
     console.log(err);

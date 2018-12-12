@@ -1,3 +1,4 @@
+require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
 const multer  = require('multer');
@@ -10,7 +11,6 @@ const upload = multer({ dest: 'uploads' });
 router.post('/', upload.single('file'), (request, response) => {
   const secret = process.env.UPLOAD_SECRET;
   const { password } = request.query;
-
   if (!secret) {
     console.log('Environment variable for upload secret has not been set!');
   }
