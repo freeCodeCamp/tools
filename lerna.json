@@ -2,6 +2,7 @@
   "packages": [
     "dashboard-api",
     "dashboard-client",
+    "probot",
     "sweeper"
   ],
   "version": "independent"
