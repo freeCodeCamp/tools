@@ -4,6 +4,8 @@ import styled from 'styled-components';
 import ListItem from './ListItem';
 import FullWidthDiv from './FullWidthDiv';
 import Result from './Result';
+import { ENDPOINT_PARETO } from '../constants';
+
 
 const List = styled.div`
   margin: 5px;
@@ -20,20 +22,20 @@ class Pareto extends React.Component {
   };
 
   componentDidMount() {
-    fetch(`http://127.0.0.1:49505/pareto`)
-    .then((response) => response.json())
-    .then(({ ok, pareto }) => {
-      if (ok) {
-        if (!pareto.length) {
-          pareto.push({ filename: 'Nothing to show in Pareto Report', count: 0, prs: [] });
+    fetch(ENDPOINT_PARETO)
+      .then((response) => response.json())
+      .then(({ ok, pareto }) => {
+        if (ok) {
+          if (!pareto.length) {
+            pareto.push({ filename: 'Nothing to show in Pareto Report', count: 0, prs: [] });
+          }
+          this.setState((prevState) => ({ data: pareto }));
         }
+      })
+      .catch(() => {
+        const pareto = [{ filename: 'Nothing to show in Pareto Report', count: 0, prs: [] }];
         this.setState((prevState) => ({ data: pareto }));
-      }
-    })
-    .catch(() => {
-      const pareto = [{ filename: 'Nothing to show in Pareto Report', count: 0, prs: [] }];
-      this.setState((prevState) => ({ data: pareto }));
-    });
+      });
   }
 
   render() {
