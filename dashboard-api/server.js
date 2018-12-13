@@ -18,8 +18,8 @@ const app = express();
 const { catchAll, pareto, pr, search, info, updateData } = require('./routes');
 
  // view engine setup
-//app.set('views', path.join(__dirname, 'views'));
-//app.set('view engine', 'pug');
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'pug');
 app.use(express.static(path.join(__dirname, '../dashboard-client/build')));
 app.use((request, response, next) => {
   response.header('Access-Control-Allow-Origin', '*');

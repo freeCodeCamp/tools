@@ -56,10 +56,15 @@ class Search extends Component {
 
   searchPRs = (value) => {
     const { selectedOption } = this.state;
+<<<<<<< HEAD
     const fetchUrl = selectedOption === 'pr' ?
       `${ENDPOINT_PR}/${value}` :
       `${ENDPOINT_SEARCH}/?value=${value}`;
 
+=======
+    const baseUrl = '/';
+    const fetchUrl = baseUrl + (selectedOption === 'pr' ? `pr/${value}` : `search/?value=${value}`);
+>>>>>>> wip mongo queries
     fetch(fetchUrl)
       .then((response) => response.json())
       .then(({ ok, message, results }) => {

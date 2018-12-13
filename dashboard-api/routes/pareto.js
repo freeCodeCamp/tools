@@ -8,6 +8,7 @@ const startTime = new Date()
 
 function getPareto(prs, cb) {
   console.log(prs)
+  
   const reportObj = prs.reduce((obj, pr) => {
     const { number, filenames, username } = pr;
     
@@ -40,13 +41,17 @@ router.get('/', (reqeust, response, next) => {
     if (prs.length === 0) {
       requestPrs((err, prs) => {
         if (err) return next(err)
-        console.log(prs)
-        getPareto(prs, function(pareto) {
-          response.json({ ok: true, prs });
+        
+        PR.find({}, (err, prs) => {
+          if (err) return next(err)
+          getPareto(prs, (pareto) => {
+            response.json({ ok: true, pareto });
+          })
         })
+        
       })
     } else {
-      getPareto(prs, function(pareto) {
+      getPareto(prs, (pareto) => {
         response.json({ ok: true, pareto });
       })
     }
