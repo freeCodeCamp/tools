@@ -1,9 +1,13 @@
 const router = require('express').Router();
 const PR = require('../models/pr.js');
+const request = require('request');
+const { requestPrs } = require('../utils/requestPRs');
+
 // TODO: where / how is startTime stored?
 const startTime = new Date()
 
 function getPareto(prs, cb) {
+  console.log(prs)
   const reportObj = prs.reduce((obj, pr) => {
     const { number, filenames, username } = pr;
     
@@ -27,15 +31,25 @@ function getPareto(prs, cb) {
   cb(pareto);
 }
 
-router.get('/', (reqeust, response) => {
+router.get('/', (reqeust, response, next) => {
   PR.find({}, (err, prs) => {
     if (err) {
       // TODO: better err handler
       console.log(err)
     }
-    getPareto(prs, function(pareto) {
-      response.json({ ok: true, pareto });
-    })
+    if (prs.length === 0) {
+      requestPrs((err, prs) => {
+        if (err) return next(err)
+        console.log(prs)
+        getPareto(prs, function(pareto) {
+          response.json({ ok: true, prs });
+        })
+      })
+    } else {
+      getPareto(prs, function(pareto) {
+        response.json({ ok: true, pareto });
+      })
+    }
   });
   
 });

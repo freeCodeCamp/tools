@@ -1,11 +1,10 @@
 const mongoose = require('mongoose');
 const PR = new mongoose.Schema({
-  action: String,
   number: Number,
-  pull_request: {},
-  repository: {},
-  sender: {},
-  installation: {}
-}, {collection: 'fcc-github-tools'});
+  'updated_at': Date,
+  username: String,
+  title: String,
+  filenames: [String]
+}, {collection: 'fccprs'});
 
 module.exports = mongoose.model('PR', PR);

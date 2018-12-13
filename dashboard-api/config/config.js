@@ -6,7 +6,7 @@ const envVarsSchema = Joi.object({
   NODE_ENV: Joi.string()
     .allow(['development', 'production', 'test', 'provision'])
     .default('development'),
-  PORT: Joi.number().default(4040),
+  PORT: Joi.number().default(3000),
   MONGO_HOST: Joi.string()
     .required()
     .description('Mongo DB host url'),
