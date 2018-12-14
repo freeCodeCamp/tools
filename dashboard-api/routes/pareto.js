@@ -3,8 +3,6 @@ const PR = require('../models/pr.js');
 const request = require('request');
 const { requestPrs } = require('../utils/requestPRs');
 
-// TODO: where / how is startTime stored?
-const startTime = new Date()
 
 function getPareto(prs, cb) {
   console.log(prs)
