@@ -92,6 +92,7 @@ typings/
 /coverage
 
 # production
+/build
 dashboard-client/build
 
 # ------------
