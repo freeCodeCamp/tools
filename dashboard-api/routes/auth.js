@@ -37,8 +37,6 @@ function getRandomNumber(req, res) {
 
 const passport = require('../../config/passport');
 
-const { ifNoUserRedirect } = require('../middlewares/user');
-
 const router = express.Router(); // eslint-disable-line new-cap
 
 /** GET /api/auth/random-number - Protected route,
