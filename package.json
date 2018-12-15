@@ -6,7 +6,8 @@
     "presolver": "probot/index.js"
   },
   "scripts": {
-    "bootstrap": "lerna bootstrap",
+    "bootstrap": "lerna bootstrap && npm run build",
+    "build": "lerna run build",
     "postinstall": "npm run bootstrap",
     "format": "prettier --write es5 './**/*.{js,json}' && npm run lint",
     "lint": "eslint ./**/*.js --fix",
@@ -34,6 +35,9 @@
     "apps": [
       "presolver"
     ]
+  },
+  "dependencies": {
+    "ajv": "^6.6.1",
+    "ajv-keywords": "^3.2.0"
   }
 }
-

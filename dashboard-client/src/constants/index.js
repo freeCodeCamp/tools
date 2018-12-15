@@ -1,3 +1,7 @@
+// TODO: Connect to '/' as API_HOST now that NODE_ENV server is running
+
+const API_HOST = '/'
+
 const API_HOST = !!process.env.REACT_APP_DEV ?
   'http://localhost:3001/' :
   '/';
