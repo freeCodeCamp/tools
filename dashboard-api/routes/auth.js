@@ -1,17 +1,12 @@
+const config = require('../../config/config');
+const router = require('express').Router();
 const express = require('express');
 const expressJwt = require('express-jwt');
-
+const authUtil = require('../middleware/auth');
 function handlePassportLogin(req, res) {
   // eslint-disable-next-line no-param-reassign
   req.session.userId = req.user._id;
-  return res.redirect('/');
-}
-
-function ifNoUserRedirect(req, res, next) {
-	if (req.user) {
-    return next();
-  }
-  return res.redirect('/');
+  return res.redirect('/home');
 }
 
 function handleSignout(req, res) {
@@ -19,7 +14,7 @@ function handleSignout(req, res) {
     req.session.destroy();
   }
   req.logout();
-  return res.redirect('/');
+  return res.redirect('/home');
 }
 /**
  * This is a protected route. Will return random number only if jwt token is provided in header.
@@ -37,8 +32,6 @@ function getRandomNumber(req, res) {
 
 const passport = require('../../config/passport');
 
-const router = express.Router(); // eslint-disable-line new-cap
-
 /** GET /api/auth/random-number - Protected route,
  * needs token returned by the above as header. Authorization: Bearer {token} */
 router
@@ -48,8 +41,10 @@ router
 router
   .route('/github/callback')
   .get(
-    passport.authenticate('github', { failureRedirect: '/' }),
+    passport.authenticate('github', { failureRedirect: '/home' }),
     handlePassportLogin
   );
 
-router.route('/signout').get(ifNoUserRedirect, handleSignout);
+router.route('/signout').get(authUtil.ifNoUserRedirect, handleSignout);
+
+module.exports = router;

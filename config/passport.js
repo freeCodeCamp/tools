@@ -8,7 +8,7 @@ const {
   github: { id, secret }
 } = require('./config');
 
-const User = require('../server/user/user.model');
+const User = require('../dashboard-api/models/user.js');
 
 passport.use(
   new GitHubStrategy(

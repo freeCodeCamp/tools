@@ -1,8 +1,9 @@
 const express = require('express');
+const authUtil = require('../middleware/auth');
 
 const router = express.Router(); // eslint-disable-line new-cap
 
-const User = require('./user.model');
+const User = require('../models/user.js');
 
 /**
  * Load user and append to req.
@@ -83,22 +84,22 @@ function remove(req, res, next) {
 
 router.route('/')
   /** GET /api/users - Get list of users */
-  .get(userCtrl.list)
+  .get(authUtil.ifNoUserRedirect)
 
   /** POST /api/users - Create new user */
-  .post(validate(paramValidation.createUser), userCtrl.create);
+  // .post(validate(paramValidation.createUser), userCtrl.create);
 
 router.route('/:userId')
   /** GET /api/users/:userId - Get user */
-  .get(userCtrl.get)
+  .get(authUtil.ifNoUserRedirect)
 
   /** PUT /api/users/:userId - Update user */
-  .put(validate(paramValidation.updateUser), userCtrl.update)
+  //.put(validate(paramValidation.updateUser), userCtrl.update)
 
   /** DELETE /api/users/:userId - Delete user */
-  .delete(userCtrl.remove);
+  // .delete(userCtrl.remove);
 
 /** Load user when API with userId route parameter is hit */
-router.param('userId', userCtrl.load);
+//router.param('userId', userCtrl.load);
 
 module.exports = router;

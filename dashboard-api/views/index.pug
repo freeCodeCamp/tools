@@ -1,11 +1,17 @@
-extends layout
-block header
-block content
-  div
-    
-    header.jumbotron.bg-secondary.text-white.text-center.header-pattern
-      .container
-        h2.font-weight-light.mb-0 dashboard
-    main
-      .container.text-center
-        h1 Hello! 
+doctype html
+html
+  head
+    meta(charset="utf-8")
+    link(rel="shortcut icon", href="/favicon.ico")
+    meta(name="viewport", content="width=device-width, initial-scale=1, shrink-to-fit=no")
+    meta(name="theme-color", content="#000000")
+    link(rel="manifest", href="/manifest.json")
+    title React App
+  body
+    noscript You need to enable JavaScript to run this app.
+    if (session.githubClientId)
+      div#root
+    // 23268a10
+    // 27b1982a
+    script(src=`/static/js/!{ind}.!{no1}.chunk.js`)
+    script(src=`/static/js/main.!{no2}.chunk.js`)

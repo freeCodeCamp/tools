@@ -1,7 +1,7 @@
 const router = require('express').Router();
-
-router.get('/', (request, response) => {
-  response.json({ ok: true, foundPRs: [] });
-});
+const { ifNoUserRedirect } = require('../middleware/auth');
+router
+  .route('/')
+  .get(ifNoUserRedirect);
 
 module.exports = router;

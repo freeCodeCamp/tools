@@ -1,5 +1,8 @@
 const fs = require('fs');
+const path = require('path');
 const express = require('express');
+const session = require('express-session');
+const cookieParser = require('cookie-parser');
 const config = require('../config/config');
 const passport = require('../config/passport');
 const mongoose = require('mongoose');
@@ -15,18 +18,19 @@ const {
   info,
   getCurrData,
   updateData,
-  auth
+  auth,
+  user
 } = require('./routes');
 
 const store = new MongoDBStore({
   mongooseConnection: mongoose.connection,
-  collection: 'mySessions'
+  collection: 'fcc-ght-session'
 });
 store.on('error', (error) => {
   console.log(error);
 });
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+//app.use(bodyParser.json());
+//app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser(config.cookieSecret));
 app.use(session({
   secret: config.cookieSecret,
@@ -45,23 +49,20 @@ app.use((request, response, next) => {
 app.use(passport.initialize());
 app.use(passport.session());
 app.use((req, res, next) => {
-  // eslint-disable-next-line no-param-reassign
+  /* eslint-disable no-param-reassign */
   res.locals.session = req.session;
-  res.locals.githubClientId = config.github.id;
+  /* eslint-enable no-param-reassign */
   next();
 });
 
-app.get('/', (request, response) => response.sendFile(pug.render(__dirname + '/dashboard-client/build/index.pug', {
+app.get('/home', (request, response) => response.sendFile(pug.renderFile(path.join(__dirname + '/dashboard-client/build/index.pug'), {
   githubClientId: config.github.id,
   ind: 1,
   no1: '23268a10',
-  no2: '27b1982a'
+  no2: '525474f1'
 
-<<<<<<< HEAD
-=======
 })));
 
->>>>>>> cookie secret unrecognized
 app.use('/pr', pr);
 app.use('/search', search);
 app.use('/pareto', pareto);
@@ -70,7 +71,19 @@ app.use('/getCurrData', getCurrData);
 app.use('/update', updateData);
 app.use('/auth', auth);
 app.use('/user', user);
-app.use('*', catchAll);
+app.use('/', catchAll);
+// make bluebird default Promise
+Promise = require('bluebird'); // eslint-disable-line no-global-assign
+
+// plugin bluebird promise in mongoose
+mongoose.Promise = Promise;
+
+// connect to mongo db
+const mongoUri = config.mongo.host;
+mongoose.connect(mongoUri, { useNewUrlParser: true });
+mongoose.connection.on('error', () => {
+  throw new Error(`unable to connect to database: ${mongoUri}`);
+});
 
 const listener = app.listen(process.env.PORT, () => {
   console.log('Your app is listening on port ' + listener.address().port);
