@@ -5,13 +5,12 @@ html
     link(rel="shortcut icon", href="/favicon.ico")
     meta(name="viewport", content="width=device-width, initial-scale=1, shrink-to-fit=no")
     meta(name="theme-color", content="#000000")
+    link(href=!{cssmain}, rel="stylesheet")
     link(rel="manifest", href="/manifest.json")
-    title React App
+    title React App base
   body
     noscript You need to enable JavaScript to run this app.
-    if (session.githubClientId)
+    if (githubClientId)
       div#root
-    // 23268a10
-    // 27b1982a
-    script(src=`/static/js/!{ind}.!{no1}.chunk.js`)
-    script(src=`/static/js/main.!{no2}.chunk.js`)
+    script(src=`!{jsindex}`)
+    script(src=`!{jsmain}`)

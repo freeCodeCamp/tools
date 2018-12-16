@@ -1,5 +1,5 @@
 const express = require('express');
-const authUtil = require('../middleware/auth');
+const { ifNoUserRedirect } = require('../middleware/auth');
 
 const router = express.Router(); // eslint-disable-line new-cap
 
@@ -84,14 +84,14 @@ function remove(req, res, next) {
 
 router.route('/')
   /** GET /api/users - Get list of users */
-  .get(authUtil.ifNoUserRedirect)
+  .get(ifNoUserRedirect)
 
   /** POST /api/users - Create new user */
   // .post(validate(paramValidation.createUser), userCtrl.create);
 
 router.route('/:userId')
   /** GET /api/users/:userId - Get user */
-  .get(authUtil.ifNoUserRedirect)
+  .get(ifNoUserRedirect)
 
   /** PUT /api/users/:userId - Update user */
   //.put(validate(paramValidation.updateUser), userCtrl.update)

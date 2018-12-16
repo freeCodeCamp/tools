@@ -2,7 +2,7 @@ const config = require('../../config/config');
 const router = require('express').Router();
 const express = require('express');
 const expressJwt = require('express-jwt');
-const authUtil = require('../middleware/auth');
+const { ifNoUserRedirect } = require('../middleware/auth');
 function handlePassportLogin(req, res) {
   // eslint-disable-next-line no-param-reassign
   req.session.userId = req.user._id;
@@ -45,6 +45,6 @@ router
     handlePassportLogin
   );
 
-router.route('/signout').get(authUtil.ifNoUserRedirect, handleSignout);
+router.route('/signout').get(ifNoUserRedirect, handleSignout);
 
 module.exports = router;

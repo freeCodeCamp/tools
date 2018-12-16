@@ -6,7 +6,6 @@ const cookieParser = require('cookie-parser');
 const config = require('../config/config');
 const passport = require('../config/passport');
 const mongoose = require('mongoose');
-const put = require('pug');
 const MongoDBStore = require('connect-mongo')(session);
 
 const app = express();
@@ -24,7 +23,7 @@ const {
 
 const store = new MongoDBStore({
   mongooseConnection: mongoose.connection,
-  collection: 'fcc-ght-session'
+  collection: 'fccsess'
 });
 store.on('error', (error) => {
   console.log(error);
@@ -39,7 +38,7 @@ app.use(session({
   store,
   cookie: { maxAge: 180 * 60 * 1000 }
 }));
-app.use(express.static('../dashboard-client/build'));
+app.use(express.static(path.join(__dirname, '../dashboard-client/build')));
 app.use((request, response, next) => {
   response.header('Access-Control-Allow-Origin', '*');
   response.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
@@ -55,13 +54,32 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get('/home', (request, response) => response.sendFile(pug.renderFile(path.join(__dirname + '/dashboard-client/build/index.pug'), {
-  githubClientId: config.github.id,
-  ind: 1,
-  no1: '23268a10',
-  no2: '525474f1'
+const manifest = require('../dashboard-client/build/asset-manifest.json');
+const jsindex = manifest['static/js/1.23268a10.chunk.js'].replace(/\/static/g, 'static'),
+  jsmain = manifest['main.js'].replace(/\/static/g, 'static'),
+  jsruntime = manifest['runtime~main.js'].replace(/\/static/g, 'static'),
+  cssmain = manifest['main.css'].replace(/\/static/g, 'static')
 
 })));
+const pugpath = path.join(__dirname, 'views/index.pug');
+const htmlpath = path.join(__dirname, '../dashboard-client/build/index.html');
+// view engine setup
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'pug');
+
+app.get('/home', (request, response) => response.sendFile(
+  (!pugpath ?
+    htmlpath :
+    require('pug').renderFile(pugpath, {
+      githubClientId: config.github.id,
+      jsindex, 
+      jsmain,
+      jsruntime,
+      cssmain
+
+    })
+  )
+));
 
 app.use('/pr', pr);
 app.use('/search', search);
