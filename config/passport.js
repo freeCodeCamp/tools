@@ -3,7 +3,7 @@ const GitHubStrategy = require('passport-github').Strategy;
 const debug = require('debug');
 
 const log = debug('fcc:config:passport');
-const { host, isOpenForRegistrations } = require('./config');
+const { host } = require('./config');
 const {
   github: { id, secret }
 } = require('./config');

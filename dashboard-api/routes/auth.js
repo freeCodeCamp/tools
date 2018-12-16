@@ -44,7 +44,7 @@ router
     passport.authenticate('github', { failureRedirect: '/home' }),
     handlePassportLogin
   );
-
-router.route('/signout').get(ifNoUserRedirect, handleSignout);
+router.route('/signin').get(ifNoUserRedirect);
+router.route('/signout').get(handleSignout);
 
 module.exports = router;

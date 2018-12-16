@@ -89,7 +89,7 @@ app.use('/getCurrData', getCurrData);
 app.use('/update', updateData);
 app.use('/auth', auth);
 app.use('/user', user);
-app.use('/', catchAll);
+app.get('*', catchAll);
 // make bluebird default Promise
 Promise = require('bluebird'); // eslint-disable-line no-global-assign
 

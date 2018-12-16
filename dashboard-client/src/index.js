@@ -14,4 +14,4 @@ ReactDOM.render(
   </ThemeProvider>,
   document.getElementById('root'));
 
-// serviceWorker.unregister();
+serviceWorker.unregister();
