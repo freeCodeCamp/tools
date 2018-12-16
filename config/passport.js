@@ -30,7 +30,8 @@ passport.use(
         githubProfile
       };
       log(githubUser);
-
+      // TODO: Check if user is a collaborator
+      const isOpenForRegistrations = true;
       return isOpenForRegistrations ?
         User.findOrCreate(githubUser, (err, user) => cb(err, user)) :
         User.findOne(githubUser, (err, user) => cb(err, user));
