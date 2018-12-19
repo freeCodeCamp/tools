@@ -20,13 +20,14 @@ router.get('/', (reqeust, response) => {
     return obj;
   }, {});
   const pareto = Object.keys(reportObj)
-    .map((filename) => {
+    .reduce((arr, filename) => {
       const { count, prs } = reportObj[filename];
-      return { filename, count, prs };
-    })
+      if (count > 1) {
+        arr.push({ filename, count, prs });
+      }
+      return arr;
+    }, [])
     .sort((a, b) => b.count - a.count);
-
-  response.json({ ok: true, pareto });
 });
 
 module.exports = router;
