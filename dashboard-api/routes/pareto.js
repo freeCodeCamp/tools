@@ -28,6 +28,8 @@ router.get('/', (reqeust, response) => {
       return arr;
     }, [])
     .sort((a, b) => b.count - a.count);
+
+  response.json({ ok: true, pareto });  
 });
 
 module.exports = router;
