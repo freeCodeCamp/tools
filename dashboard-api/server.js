@@ -54,32 +54,9 @@ app.use((req, res, next) => {
   next();
 });
 
-const manifest = require('../dashboard-client/build/asset-manifest.json');
-const jsindex = manifest['static/js/1.23268a10.chunk.js'].replace(/\/static/g, 'static'),
-  jsmain = manifest['main.js'].replace(/\/static/g, 'static'),
-  jsruntime = manifest['runtime~main.js'].replace(/\/static/g, 'static'),
-  cssmain = manifest['main.css'].replace(/\/static/g, 'static')
-
-})));
-const pugpath = path.join(__dirname, 'views/index.pug');
 const htmlpath = path.join(__dirname, '../dashboard-client/build/index.html');
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'pug');
 
-app.get('/home', (request, response) => response.sendFile(
-  (!pugpath ?
-    htmlpath :
-    require('pug').renderFile(pugpath, {
-      githubClientId: config.github.id,
-      jsindex, 
-      jsmain,
-      jsruntime,
-      cssmain
-
-    })
-  )
-));
+app.get('/home', (request, response) => response.sendFile(htmlpath));
 
 app.use('/pr', pr);
 app.use('/search', search);
