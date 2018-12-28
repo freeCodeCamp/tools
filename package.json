@@ -11,7 +11,7 @@
     "postinstall": "npm run bootstrap",
     "format": "prettier --write es5 './**/*.{js,json}' && npm run lint",
     "lint": "eslint ./**/*.js --fix",
-    "start": "./dashboard-api/server.js",
+    "start": "lerna run start",
     "dev": "nodemon"
   },
   "devDependencies": {
@@ -19,10 +19,7 @@
     "eslint-config-freecodecamp": "^1.1.1",
     "lerna": "^3.5.1",
     "prettier": "^1.15.2",
-    "presolver": "file:probot"    
-  },
-  "devDependencies": {
-    "lerna": "^3.5.1"
+    "presolver": "file:probot"
   },
   "nodemonConfig": {
     "exec": "npm start",
