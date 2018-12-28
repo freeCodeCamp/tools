@@ -7,12 +7,21 @@
     "develop": "cross-env PORT=3001 node server.js"
   },
   "dependencies": {
+    "bluebird": "^3.5.3",
     "cli-progress": "^2.1.1",
+    "connect-mongo": "^2.0.3",
     "cross-env": "^5.2.0",
     "dotenv": "^6.2.0",
     "express": "^4.16.3",
-    "node-fetch": "^2.3.0"
+    "express-jwt": "^5.3.1",
+    "mongoose": "^5.4.0",
+    "multer": "^1.4.1",
+    "node-fetch": "^2.3.0",
+    "passport": "^0.4.0",
+    "passport-github": "^1.1.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "debug": "^4.1.0"
+  },
   "license": "BSD-3-Clause"
 }
