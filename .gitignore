@@ -92,7 +92,7 @@ typings/
 /coverage
 
 # production
-dashboard-client/build
+build
 
 # ------------
 # Custom Files
@@ -102,6 +102,7 @@ dashboard-client/build
 sweeper/work-logs/*
 
 # local input files
-sweeper/input-files/*
+input-files
 
-dashboard-api/public
+# work-logs
+work-logs
