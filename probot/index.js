@@ -21,7 +21,6 @@ async function probotPlugin(robot) {
   const app = robot.route('/contribute');
   const { catchAll, pareto, pr, search, info } = require('./server/routes');
 
-   // view engine setup
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(require('express').static(path.join(__dirname, './client/build')));
