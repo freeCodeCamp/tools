@@ -1,6 +1,7 @@
 {
   "packages": [
     "probot",
+    "probot/client",
     "lib"
   ],
   "version": "independent"

@@ -13,7 +13,7 @@ const octokit = require('@octokit/rest')(octokitConfig);
 
 const { getPRs, getUserInput } = require('../lib/get-prs');
 const { addLabels, addComment } = require('../lib/pr-tasks');
-const { rateLimiter, savePrData, ProcessingLog } = require('../lib/utils');
+const { rateLimiter, ProcessingLog } = require('../lib/utils');
 const {
   frontmatterCheck
 } = require('../lib/validation/guide-folder-checks/frontmatter-check');
@@ -51,8 +51,8 @@ const labeler = async(
   if (newLabels.length) {
     if (process.env.PRODUCTION_RUN === 'true') {
       addLabels(number, newLabels);
+      await rateLimiter();
     }
-    await rateLimiter(+process.env.RATELIMIT_INTERVAL || 1500);
   }
   return newLabels;
 };
@@ -87,8 +87,8 @@ const guideFolderChecks = async(number, prFiles, user) => {
     const comment = createErrorMsg(prErrors, user);
     if (process.env.PRODUCTION_RUN === 'true') {
       await addComment(number, comment);
+      await rateLimiter();
     }
-    await rateLimiter(+process.env.RATELIMIT_INTERVAL || 1500);
     return comment;
   } else {
     return null;
@@ -97,15 +97,13 @@ const guideFolderChecks = async(number, prFiles, user) => {
 
 (async() => {
   const { totalPRs, firstPR, lastPR } = await getUserInput();
-  // log.setFirstLast({ firstPR, lastPR });
-  console.log(firstPR, lastPR);
   const prPropsToGet = ['number', 'labels', 'user'];
   const { openPRs } = await getPRs(totalPRs, firstPR, lastPR, prPropsToGet);
 
-  savePrData(openPRs, firstPR, lastPR);
   log.start();
   console.log('Starting frontmatter checks process...');
-  for (let count in openPRs) {
+  let count = 0;
+  for (let i = 0; i < openPRs.length; i++) {
     if (openPRs.length) {
       let {
         number, labels: currentLabels, user: { login: username }
@@ -113,7 +111,9 @@ const guideFolderChecks = async(number, prFiles, user) => {
       const {
         data: prFiles
       } = await octokit.pullRequests.listFiles({ owner, repo, number });
-
+      if (count > 4000) {
+        await rateLimiter(2350);
+      }
       const guideFolderErrorsComment = await guideFolderChecks(
         number, prFiles, username
       );
@@ -127,7 +127,6 @@ const guideFolderChecks = async(number, prFiles, user) => {
       const labelLogVal = labelsAdded.length ? labelsAdded : 'none added';
 
       log.add(number, { number, comment: commentLogVal, labels: labelLogVal });
-      await rateLimiter(+process.env.RATELIMIT_INTERVAL || 1500);
     }
   }
 })()

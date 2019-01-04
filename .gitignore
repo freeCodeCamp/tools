@@ -98,11 +98,5 @@ build
 # Custom Files
 # ------------
 
-# local-work-logs
-sweeper/work-logs/*
-
-# local input files
-input-files
-
 # work-logs
 work-logs

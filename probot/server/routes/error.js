@@ -2,7 +2,7 @@ const httpStatus = require('http-status');
 const expressWinston = require('express-winston');
 const expressValidation = require('express-validation');
 
-const config = require('../config/config');
+const config = require('../config');
 const winstonInstance = require('../config/winston');
 const log = require('../config/winston');
 const APIError = require('../config/APIError');

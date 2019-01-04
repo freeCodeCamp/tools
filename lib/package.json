@@ -1,5 +1,5 @@
 {
-  "name": "@freecodecamp/contribute/one-off-scripts",
+  "name": "freecodecampcontributelib",
   "dependencies": {
     "@octokit/rest": "^15.18.0",
     "cli-progress": "^2.1.0",

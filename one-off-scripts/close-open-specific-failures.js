@@ -6,7 +6,7 @@ const log = new ProcessingLog('prs-closed-reopened');
 
 log.start();
 const getUserInput = async() => {
-  let [ n, f, filename ] = process.argv;
+  let filename = process.argv[2];
 
   if (!filename) {
     throw 'Specify a file with PRs which needed to be closed and reopened.';

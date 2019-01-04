@@ -3,22 +3,24 @@ This is a one-off script to find all open PRs which have one of the
 console.error descriptions in the failuresToFind.json file.
 */
 
-const path = require('path');
 const fetch = require('node-fetch');
 
-const { owner, repo, octokitConfig, octokitAuth } = require('../constants');
+const { owner, repo, octokitConfig, octokitAuth } = require('../lib/constants');
 
 const octokit = require('@octokit/rest')(octokitConfig);
-const { getPRs, getUserInput } = require('../get-prs');
-const { savePrData, ProcessingLog } = require('../utils');
+const { getPRs, getUserInput } = require('../lib/get-prs');
+const { savePrData, ProcessingLog } = require('../lib/utils');
 
 octokit.authenticate(octokitAuth);
 
 const log = new ProcessingLog('find-failures-script');
 
-const errorsToFind = require(path.resolve(
-  __dirname, '../../input-files/failuresToFind.json')
-);
+const errorsToFind = [
+  {
+    error: '',
+    regex: ''
+  }
+];
 
 (async() => {
   const { totalPRs, firstPR, lastPR } = await getUserInput();
@@ -48,19 +50,19 @@ const errorsToFind = require(path.resolve(
           if (hasProblem) {
             let buildNum = Number(targetUrl.match(/\/builds\/(\d+)\?/i)[1]);
             /*
-            const logNumber = 'need to use Travis api to               access the full log for the buildNum above'
+            const logNumber = 'need to use Travis api to
+            access the full log for the buildNum above'
             */
             const logNumber = ++buildNum;
-            const travisLogUrl = `https://api.travis-ci.org/v3/job/${logNumber}/log.txt`;
+            const travisBaseUrl = 'https://api.travis-ci.org/v3/job/';
+            const travisLogUrl = `${travisBaseUrl + logNumber}/log.txt`;
             const response = await fetch(travisLogUrl);
             const logText = await response.text();
-            let found = false;
             let error;
             for (let { error: errorDesc, regex } of errorsToFind) {
               regex = RegExp(regex);
               if (regex.test(logText)) {
                 error = errorDesc;
-                found = true;
                 break;
               }
             }

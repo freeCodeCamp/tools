@@ -1,4 +1,4 @@
-const config = require('../config/config');
+const config = require('../config');
 // config should be imported before importing any other file
 const mongoose = require('mongoose');
 
@@ -10,8 +10,8 @@ const mongoUri = config.mongo.host;
 const db = mongoose.connect(mongoUri, { useNewUrlParser: true });
 
 const { PR, INFO } = require('../models');
-const { getPRs, getUserInput, getFilenames } = require('../../sweeper/get-prs');
-const { rateLimiter } = require('../../sweeper/utils');
+const { getPRs, getUserInput, getFilenames } = require('../../lib/get-prs');
+const { rateLimiter } = require('../../lib/utils');
 
 const lastUpdate = new Date();
 
@@ -51,8 +51,8 @@ db.then(async() => {
       );
       console.log('updated PR #' + number);
     }
-    if (count > 3000 ) {
-      await rateLimiter(1400);
+    if (count > 4000 ) {
+      await rateLimiter(2350);
     }
   }
   for (let j = 0; j < oldPRs.length; j++) {

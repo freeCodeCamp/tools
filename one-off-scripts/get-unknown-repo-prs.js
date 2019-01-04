@@ -1,8 +1,8 @@
-const { owner, repo, octokitConfig, octokitAuth } = require('../constants');
+const { owner, repo, octokitConfig, octokitAuth } = require('../lib/constants');
 const octokit = require('@octokit/rest')(octokitConfig);
 
-const { getPRs, getUserInput } = require('../get-prs');
-const { ProcessingLog, rateLimiter } = require('../utils');
+const { getPRs, getUserInput } = require('../lib/get-prs');
+const { ProcessingLog, rateLimiter } = require('../lib/utils');
 
 octokit.authenticate(octokitAuth);
 
@@ -13,17 +13,22 @@ log.start();
   const prPropsToGet = ['number', 'user', 'head'];
   const { openPRs } = await getPRs(totalPRs, firstPR, lastPR, prPropsToGet);
   if (openPRs.length) {
-    for (let count = 0; count < openPRs.length; count++) {
-      let { number, head: { repo: headRepo } } = openPRs[count];
+    let count = 0;
+    for (let i = 0; i < openPRs.length; i++) {
+      let { number, head: { repo: headRepo } } = openPRs[i];
       if (headRepo === null) {
         const {
           data: { mergeable_state: mergeableState }
         } = await octokit.pullRequests.get({ owner, repo, number });
+        count++;
+
         if (mergeableState === 'dirty' || mergeableState === 'unknown') {
           log.add(number, { number, mergeableState });
-          console.log(`[${number} (mergeable_state: ${mergeableState})](https://github.com/freeCodeCamp/freeCodeCamp/pull/${number})`);
+          console.log(`${number} (${mergeableState})`);
         }
-        await rateLimiter(1000);
+        if (count > 4000 ) {
+          await rateLimiter(2350);
+        }
       }
     }
   } else {
