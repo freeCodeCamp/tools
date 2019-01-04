@@ -18,7 +18,7 @@ const { catchAll, pareto, pr, search, info } = require('./routes');
  // view engine setup
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, '../dashboard-client/build')));
+app.use(express.static(path.join(__dirname, '../client/build')));
 app.use((request, response, next) => {
   response.header('Access-Control-Allow-Origin', '*');
   response.header(
