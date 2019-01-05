@@ -17,19 +17,13 @@ async function probotPlugin(robot) {
   ];
 
   robot.on(events, presolve.bind(null, robot));
-  /*const landingHtml = path.join(__dirname, './public/index.html');
+
   const landingPage = robot.route('/');
   landingPage.use(require('express').static('public'));
-  landingPage.get('/', (req, res) => res.sendFile(landingHtml));*/
   const app = robot.route('/contribute');
-  const { catchAll, pareto, pr, search, info } = require('./server/routes');
+  const { pareto, pr, search, info } = require('./server/routes');
 
   const staticPath = path.join(__dirname, '.', 'client', 'build');
-// WHY it won't work is the mystery:
-  //app.use('static/', require('express').static(staticPath));
-  //app.use('/static/', require('express').static(staticPath));
-  //app.use('/static', require('express').static(staticPath));
-  //app.use('/contribute/static', require('express').static(staticPath));
   app.use(require('express').static(staticPath));
 
   app.use((request, response, next) => {
@@ -42,16 +36,18 @@ async function probotPlugin(robot) {
     next();
   });
 
-  // app.get('/health-check', (req, res) => res.send('OK'));
+  const landingHtml = path.join(__dirname, './public/index.html');
+  landingPage.get('/', (req, res) => res.sendFile(landingHtml));
+
+  const htmlpath = path.join(__dirname, './client/build/index.html');
+  app.get('/', (request, response) => response.sendFile(htmlpath));
+
   app.use('/pr', pr);
   app.use('/search', search);
   app.use('/pareto', pareto);
   app.use('/info', info);
 
-  const htmlpath = path.join(__dirname, './client/build/index.html');
-  app.get('/', (request, response) => response.sendFile(htmlpath));
-  //app.use('*', catchAll);
-  app.use(function (err, req, res) {
+  app.use(function(err, req, res) {
     res.status(err.status || 500).send(err.message);
   });
   // connect to mongo db
@@ -73,7 +69,7 @@ async function presolve(app, context) {
 }
 
 function forRepository(context) {
-  const config = Object.assign({}, context.repo({ logger: debug }));
+  const config = {...context.repo({ logger: debug })};
   return new Presolver(context, config);
 }
 

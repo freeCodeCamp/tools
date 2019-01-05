@@ -1,5 +1,6 @@
 {
   "name": "@freecodecamp/dashboard-client",
+  "homepage": ".",
   "private": true,
   "dependencies": {
     "react": "^16.6.3",
