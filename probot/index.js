@@ -23,7 +23,8 @@ async function probotPlugin(robot) {
 
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));
-  app.use(require('express').static(path.join(__dirname, './client/build')));
+  const staticPath = path.join(__dirname, './client/build');
+  app.use(require('express').static(staticPath));
   app.use((request, response, next) => {
     response.header('Access-Control-Allow-Origin', '*');
     response.header(
