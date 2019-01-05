@@ -5,7 +5,6 @@ const config = require('../config');
 // config should be imported before importing any other file
 const mongoose = require('mongoose');
 const path = require('path');
-const bodyParser = require('body-parser');
 
 async function probotPlugin(robot) {
   const events = [
@@ -18,13 +17,21 @@ async function probotPlugin(robot) {
   ];
 
   robot.on(events, presolve.bind(null, robot));
+  /*const landingHtml = path.join(__dirname, './public/index.html');
+  const landingPage = robot.route('/');
+  landingPage.use(require('express').static('public'));
+  landingPage.get('/', (req, res) => res.sendFile(landingHtml));*/
   const app = robot.route('/contribute');
   const { catchAll, pareto, pr, search, info } = require('./server/routes');
 
-  app.use(bodyParser.json());
-  app.use(bodyParser.urlencoded({ extended: true }));
-  const staticPath = path.join(__dirname, './client/build');
+  const staticPath = path.join(__dirname, '.', 'client', 'build');
+// WHY it won't work is the mystery:
+  //app.use('static/', require('express').static(staticPath));
+  //app.use('/static/', require('express').static(staticPath));
+  //app.use('/static', require('express').static(staticPath));
+  //app.use('/contribute/static', require('express').static(staticPath));
   app.use(require('express').static(staticPath));
+
   app.use((request, response, next) => {
     response.header('Access-Control-Allow-Origin', '*');
     response.header(
@@ -43,7 +50,10 @@ async function probotPlugin(robot) {
 
   const htmlpath = path.join(__dirname, './client/build/index.html');
   app.get('/', (request, response) => response.sendFile(htmlpath));
-  app.use('*', catchAll);
+  //app.use('*', catchAll);
+  app.use(function (err, req, res) {
+    res.status(err.status || 500).send(err.message);
+  });
   // connect to mongo db
   const mongoUri = config.mongo.host;
   const promise = mongoose.connect(mongoUri, { useNewUrlParser: true });
