@@ -19,7 +19,7 @@ async function probotPlugin(robot) {
 
   const landingPage = robot.route('/');
   landingPage.use(require('express').static('public'));
-  const app = robot.route('/contribute');
+  const app = robot.route('/dashboard');
   const { pareto, pr, search, info } = require('./server/routes');
 
   const staticPath = path.join(__dirname, '.', 'client', 'build');
