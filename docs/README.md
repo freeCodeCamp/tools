@@ -15,7 +15,7 @@ npm install
 
 npm run build
 
-npm run dev # or num start for production
+npm run dev
 ```
 
 ## Caveats & Notes
