@@ -1,18 +1,33 @@
 const expect = require('expect');
 const { Probot } = require('probot');
 const prOpened = require('./payloads/events/pullRequests.opened');
-const prExisting = require('./payloads/events/pullRequests.existing');
-const prUnrelated = require('./payloads/events/pullRequests.unrelated');
 const prClosed = require('./payloads/events/pullRequests.closed');
 const prOpenedFiles = require('./payloads/files/files.opened');
 const prExistingFiles = require('./payloads/files/files.existing');
 const prUnrelatedFiles = require('./payloads/files/files.unrelated');
 const probotPlugin = require('..');
 const { PRtest } = require('./utils/testmodels');
+const Presolver = require('../server/presolver');
+const { setupRecorder } = require('nock-record');
+// const { getState } = require('')
+const { getCount, getFirst, getRange } = require('../../lib/get-prs/pr-stats-probot');
 // const mongoose = require('mongoose');
 
+const record = setupRecorder();
+
+const getState = async (context) => {
+  return context
+  // const presolver = forRepository(context);
+  // return presolver._getState(context);
+};
+
+function forRepository(context) {
+  const config = { ...context.repo({ logger: console }) };
+  return new Presolver(context, config);
+}
+
 describe('Presolver', () => {
-  let probot, github;
+  let probot, github, app;
 
   afterEach(async (done) => {
     await PRtest.deleteMany({}).catch(err => console.log(err));
@@ -23,7 +38,7 @@ describe('Presolver', () => {
 
     probot = new Probot({});
     // Load our app into probot
-    let app = await probot.load(probotPlugin);
+    app = await probot.load(probotPlugin);
     await PRtest.deleteMany({}).catch(err => console.log(err));
     // This is an easy way to mock out the GitHub API
     // https://probot.github.io/docs/testing/
@@ -70,27 +85,58 @@ describe('Presolver', () => {
         // eslint-disable-next-line no-undef
         list: jest
           .fn()
-          .mockImplementation(() => ({ data: [
-            prExisting.pull_request
-          ] }))
-      }
+          .mockImplementation((options) => {
+            console.log(options);
+            return {
+              data: [
+                prOpened.pull_request
+              ]
+            };
+          })
+      },
+      // eslint-disable-next-line no-undef
+      search: jest.fn().mockImplementation(() => ({
+        data: [ ]
+      }))
     };
     app.auth = () => Promise.resolve(github);
   });
 
-  test('logs the repo object on pull-request events', async() => {
+  test('should receive repo info', async() => {
     await probot.receive({
-      name: 'pull_request.opened',
+      name: 'pull_request',
       payload: prOpened
     });
-    // expect(github.)
-  });
 
+    /*
+    expect()
+    */
+    /* app.on('pull_request.opened', async (robot) => {
+      const { completeRecording } = await record('pr-stats');
+      const result = getState.bind(app);
+      completeRecording();
+      console.log(result);
+      expect(result).not.toBe(null);
+    });
+    // const result = app;//await getState(null, app);
+*/
+    /* / expect(github.)*/
+    expect(github.pullRequests.list).toHaveBeenCalledWith({
+      state: 'open',
+      base: 'master',
+      sort: 'created',
+      direction: 'asc',
+      page: 1,
+      // eslint-disable-next-line camelcase
+      per_page: 100
+    });
+  });
+/*
   test(`adds a label if a PR has changes to files targeted by an
     existing PR`, async () => {
     // Receive a webhook event
     await probot.receive({
-      name: 'pull_request.opened',
+      name: 'pull_request',
       payload: prOpened
     });
     expect(github.issues.addLabels).toHaveBeenCalled();
@@ -150,7 +196,7 @@ describe('Presolver', () => {
       .catch(err => console.log(err));
     expect(result).toBe(null);
 
-  });
+  }); */
 });
 
 // For more information about testing with Jest see:

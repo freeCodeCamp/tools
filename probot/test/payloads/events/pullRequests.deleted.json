@@ -1,0 +1,69 @@
+{
+  "action": "deleted",
+  "installation": {
+    "id": 585398,
+    "account": {
+      "login": "freeCodeCamp-rocks",
+      "id": 44328119,
+      "node_id": "MDEyOk9yZ2FuaXphdGlvbjQ0MzI4MTE5",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/44328119?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/freeCodeCamp-rocks",
+      "html_url": "https://github.com/freeCodeCamp-rocks",
+      "followers_url": "https://api.github.com/users/freeCodeCamp-rocks/followers",
+      "following_url": "https://api.github.com/users/freeCodeCamp-rocks/following{/other_user}",
+      "gists_url": "https://api.github.com/users/freeCodeCamp-rocks/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/freeCodeCamp-rocks/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/freeCodeCamp-rocks/subscriptions",
+      "organizations_url": "https://api.github.com/users/freeCodeCamp-rocks/orgs",
+      "repos_url": "https://api.github.com/users/freeCodeCamp-rocks/repos",
+      "events_url": "https://api.github.com/users/freeCodeCamp-rocks/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/freeCodeCamp-rocks/received_events",
+      "type": "Organization",
+      "site_admin": false
+    },
+    "repository_selection": "selected",
+    "access_tokens_url": "https://api.github.com/installations/585398/access_tokens",
+    "repositories_url": "https://api.github.com/installation/repositories",
+    "html_url": "https://github.com/organizations/freeCodeCamp-rocks/settings/installations/585398",
+    "app_id": 23632,
+    "target_id": 44328119,
+    "target_type": "Organization",
+    "permissions": {
+      "issues": "write",
+      "pull_requests": "write",
+      "metadata": "read"
+    },
+    "events": [
+      "issues",
+      "issue_comment",
+      "label",
+      "pull_request",
+      "pull_request_review",
+      "pull_request_review_comment"
+    ],
+    "created_at": "2019-01-14T22:08:01.000Z",
+    "updated_at": "2019-01-14T22:08:01.000Z",
+    "single_file_name": null
+  },
+  "sender": {
+    "login": "raisedadead",
+    "id": 1884376,
+    "node_id": "MDQ6VXNlcjE4ODQzNzY=",
+    "avatar_url": "https://avatars0.githubusercontent.com/u/1884376?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/raisedadead",
+    "html_url": "https://github.com/raisedadead",
+    "followers_url": "https://api.github.com/users/raisedadead/followers",
+    "following_url": "https://api.github.com/users/raisedadead/following{/other_user}",
+    "gists_url": "https://api.github.com/users/raisedadead/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/raisedadead/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/raisedadead/subscriptions",
+    "organizations_url": "https://api.github.com/users/raisedadead/orgs",
+    "repos_url": "https://api.github.com/users/raisedadead/repos",
+    "events_url": "https://api.github.com/users/raisedadead/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/raisedadead/received_events",
+    "type": "User",
+    "site_admin": false
+  }
+}
