@@ -19,8 +19,6 @@
     "test:watch": "jest --watch --notify --notifyMode=change --coverage"
   },
   "dependencies": {
-    "bluebird": "^3.5.3",
-    "body-parser": "^1.18.3",
     "cli-progress": "^2.1.1",
     "cross-env": "^5.2.0",
     "dotenv": "^6.2.0",
