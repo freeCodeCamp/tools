@@ -1,9 +1,11 @@
 const debug = require('debug')('probot:presolver');
 const Presolver = require('./server/presolver');
+const Pr = require('../lib/get-prs/index-probot');
 const config = require('../config');
 // config should be imported before importing any other file
 const mongoose = require('mongoose');
 const path = require('path');
+const prOpened = require('./test/payloads/events/pullRequests.opened');
 
 async function probotPlugin(robot) {
   const events = [
@@ -14,16 +16,20 @@ async function probotPlugin(robot) {
     'pull_request.labeled',
     'pull_request.closed'
   ];
-
-  robot.on(events, presolve.bind(null, robot));
-
-  // const prOpened = require('./test/payloads/events/pullRequests.opened');
+  // robot.on(events, presolve.bind(null, robot));
+  robot.on(events, (robot) => {
+    robot.log(robot);
+    getState.bind(null, robot);
+  });
+  // robot.log(robot);
   // robot.receive({
-  //   name: 'pull_request.opened',
+  //   name: 'pull_request',
   //   payload: prOpened
   // });
   const redirect = robot.route('/');
-  redirect.get('/', (req, res) => res.redirect('/home'));
+  redirect.get('/', async(req, res) => {
+    res.redirect('/home');
+  });
   const landingPage = robot.route('/home');
   landingPage.use(require('express').static('public'));
   const app = robot.route('/dashboard');
@@ -39,6 +45,8 @@ async function probotPlugin(robot) {
       'Origin, X-Requested-With, Content-Type, Accept'
     );
     response.header('Access-Control-Allow-Methods', 'GET');
+    response.header(
+      'Accept', 'application/vnd.github.machine-man-preview+json');
     next();
   });
 
@@ -74,14 +82,26 @@ async function probotPlugin(robot) {
   }
 }
 
+async function getState(app, context) {
+  const pr = forGet(context);
+  return pr.getPRs(context);
+}
+
 async function presolve(app, context) {
   const presolver = forRepository(context);
   const pullRequest = getPullRequest(context);
   return presolver.presolve(pullRequest);
 }
 
+function forGet(context) {
+  const config = { ...context.repo() };
+  return new Pr(context, config);
+
+}
+
 function forRepository(context) {
-  const config = { ...context.repo({ logger: debug }) };
+  console.log(context);
+  const config = { ...context.repo() };
   return new Presolver(context, config);
 }
 
