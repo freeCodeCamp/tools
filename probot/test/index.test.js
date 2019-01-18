@@ -78,6 +78,14 @@ describe('Presolver', () => {
     app.auth = () => Promise.resolve(github);
   });
 
+  test('logs the repo object on pull-request events', async() => {
+    await probot.receive({
+      name: 'pull_request.opened',
+      payload: prOpened
+    });
+    // expect(github.)
+  });
+
   test(`adds a label if a PR has changes to files targeted by an
     existing PR`, async () => {
     // Receive a webhook event

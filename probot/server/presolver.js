@@ -1,5 +1,5 @@
 // const { updateDb } = require('./tools/update-db');
-
+const { PR, INFO } = require('./models/index');
 class Presolver {
   constructor(context, { owner, repo, logger = console, ...config }) {
     this.context = context;
@@ -30,14 +30,33 @@ class Presolver {
   }
 
   async _getState() {
+    const getInfo =
+      await INFO.find({}).sort({lastUpdate: -1});
+    const lastUpdate = JSON.parse(JSON.stringify(getInfo))[0].lastUpdate;
+    const count = await this.context.issues.list({
+      since: lastUpdate
+  //     /*
+// q:`repo:${this.config.owner}/${this.config.repo}+is:open+type:pr+base:master`,
+  //     sort: 'created',
+  //     order: 'asc',
+  //     page: 1,
+  //     per_page: 1*/
+    })
+    .catch(err => {
+       console.log(err);
+    });
+    console.log(count);
+    //console.log(JSON.parse(JSON.stringify(lastUpdate))[0]);
+    // console.log(this.context)
     // console.log(this.context.issue())
-    const files = await this.github.pullRequests.listFiles(this.context.issue());
+    // const files = await
+    // this.github.pullRequests.listFiles(this.context.issue());
     // console.log(files)
-    const { owner, repo } = this.config;
-    const prs =
-      (await this.github.pullRequests.list({ owner, repo }).data) || [];
+    // const { owner, repo } = this.config;
+    // const prs =
+      // (await this.github.pullRequests.list({ owner, repo }).data) || [];
     // console.log(prs)
-    await this._getConflictingFiles(prs, files);
+    // await this._getConflictingFiles(prs, files);
   }
 
   async _getConflictingFiles(prs, files) {
