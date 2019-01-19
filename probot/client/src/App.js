@@ -85,7 +85,7 @@ class App extends Component {
             src="https://discourse-user-assets.s3.dualstack.us-east-1.amazonaws.com/original/3X/e/d/ed1c70bda321aaeee9e6c20ab650ce8bc34899fa.svg"
             alt="Free Code Camp Logo"
           />{' '}
-          Moderator Tools
+          Contributor Tools
         </Title>
         <Tabs view={view} onViewChange={handleViewChange} />
         <Container>
