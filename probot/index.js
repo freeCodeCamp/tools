@@ -1,11 +1,10 @@
-const debug = require('debug')('probot:presolver');
+// const debug = require('debug')('probot:presolver');
 const Presolver = require('./server/presolver');
-const Pr = require('../lib/get-prs/index-probot');
 const config = require('../config');
 // config should be imported before importing any other file
 const mongoose = require('mongoose');
 const path = require('path');
-const prOpened = require('./test/payloads/events/pullRequests.opened');
+// const prOpened = require('./test/payloads/events/pullRequests.opened');
 
 async function probotPlugin(robot) {
   const events = [
@@ -16,11 +15,11 @@ async function probotPlugin(robot) {
     'pull_request.labeled',
     'pull_request.closed'
   ];
-  // robot.on(events, presolve.bind(null, robot));
-  robot.on(events, (robot) => {
+  robot.on(events, presolve.bind(null, robot));
+  /* robot.on(events, (robot) => {
     robot.log(robot);
     getState.bind(null, robot);
-  });
+  });*/
   // robot.log(robot);
   // robot.receive({
   //   name: 'pull_request',
@@ -28,6 +27,7 @@ async function probotPlugin(robot) {
   // });
   const redirect = robot.route('/');
   redirect.get('/', async(req, res) => {
+    // getState.bind(null, robot);
     res.redirect('/home');
   });
   const landingPage = robot.route('/home');
@@ -82,25 +82,13 @@ async function probotPlugin(robot) {
   }
 }
 
-async function getState(app, context) {
-  const pr = forGet(context);
-  return pr.getPRs(context);
-}
-
 async function presolve(app, context) {
   const presolver = forRepository(context);
   const pullRequest = getPullRequest(context);
   return presolver.presolve(pullRequest);
 }
 
-function forGet(context) {
-  const config = { ...context.repo() };
-  return new Pr(context, config);
-
-}
-
 function forRepository(context) {
-  console.log(context);
   const config = { ...context.repo() };
   return new Presolver(context, config);
 }
