@@ -84,6 +84,9 @@ const Container = styled.div`
    text-decoration: none;
    display: block;
    padding: 5px;
+   @media (max-width: 600px) {
+    flex-direction: column;
+  }
 `;
 
 const imgStyle = { width: '100%', height: 'auto' };
