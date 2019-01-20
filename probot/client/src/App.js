@@ -46,8 +46,15 @@ const Container = styled.div`
   list-style: none;
   display: flex;
   align-items: center;
+  background: ${({ theme }) => theme.primary};
+  color: white;
+  width: 100%;
+  padding: 3px;
   flex-wrap: wrap;
- `;
+  @media (max-width: 600px) {
+    flex-direction: column;
+  }
+`;
 
  const MenuLink = styled.a`
    color: #ffffff;
