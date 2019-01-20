@@ -16,6 +16,7 @@ const Header = styled.div`
   margin: 0;
   padding:0;
   overflow: hidden;
+  background: #fff;
 `;
 
 const AppNav = styled.nav`
@@ -25,6 +26,24 @@ const AppNav = styled.nav`
   display: flex;
   justify-content: space-between;
   align-items: center;
+`;
+
+const NavAnchor = styled.a`
+  text-decoration: none;
+  color: #fff;
+  width: 20vw;
+  @media (max-width: 600px) {
+    width: 50vw;
+  }
+`;
+
+const NavTitle = styled.h1`
+  width: 60vw;
+  text-align: center;
+  margin: 0 auto;
+  @media (max-width: 600px) {
+    width: 100vw;
+  }
 `;
 
 const PageContainer = styled.div`
@@ -40,6 +59,8 @@ const Container = styled.div`
   padding: 15px;
   border-radius: 4px;
   box-shadow: 0 0 4px 0 #777;
+  margin: 30px;
+  background-color: #fff;
 `;
 
  const Menu = styled.ul`
@@ -48,20 +69,24 @@ const Container = styled.div`
   align-items: center;
   background: ${({ theme }) => theme.primary};
   color: white;
-  width: 100%;
+  width: 20vw;
   padding: 3px;
   flex-wrap: wrap;
+  justify-content: flex-end;
   @media (max-width: 600px) {
     flex-direction: column;
+    width: 50vw;
   }
 `;
 
  const MenuLink = styled.a`
-   color: #ffffff;
+   color: #fff!important;
    text-decoration: none;
    display: block;
    padding: 5px;
 `;
+
+const imgStyle = { width: '100%', height: 'auto' };
 
 class App extends Component {
   state = {
@@ -102,15 +127,14 @@ class App extends Component {
       <>
        <Header>
         <AppNav>
-          <div>
-              <a href="https://www.freecodecamp.org" target="_blank" rel="noopener noreferrer">
-                <img alt="learn to code javascript at freeCodeCamp logo"
-                  className="img-responsive nav-logo"
-                  src="https://s3.amazonaws.com/freecodecamp/freecodecamp_logo.svg"
-                />
-              </a>
-          </div>
-
+          <NavAnchor href="https://www.freecodecamp.org" target="_blank" rel="noopener noreferrer">
+            <img alt="learn to code javascript at freeCodeCamp logo"
+              style={imgStyle}
+              className="img-responsive nav-logo"
+              src="https://s3.amazonaws.com/freecodecamp/freecodecamp_logo.svg"
+            />
+          </NavAnchor>
+          <NavTitle>Contributor Tools</NavTitle>
           <Menu>
             <li class="hidden-xs return-to-free-code-camp">
               <MenuLink href="/">Home</MenuLink>

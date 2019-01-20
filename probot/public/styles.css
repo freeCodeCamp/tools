@@ -1,0 +1,160 @@
+
+html {
+  font-weight: 300;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+}
+a {
+  list-style-type: none;
+  text-decoration: none;
+}
+td {
+  line-height: 1.42857143;
+  font-size: 30px;
+  color: darkgreen;
+}
+td a {
+  color: darkgreen;
+  margin-left: 10px;
+}
+hr {
+  border: 0px;
+  border-top: 1px solid black;
+}
+h1 {
+  width: 75vw;
+  margin: 0px auto;
+}
+h2 {
+  font-size: 30px;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+h4, .h4, h5, .h5, h6, .h6 {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+h3, .h3 {
+  font-size: 24px;
+}
+h4, .h4 {
+  font-weight: 200;
+  font-size: 18px;
+}
+h5, .h5 {
+  font-size: 14px;
+}
+h6, .h6 {
+  font-size: 12px;
+}
+p {
+  margin: 0 0 10px;
+}
+.header {
+  position: fixed;
+  top:0;
+  left:0;
+  width: 100%;
+  margin: 0;
+  padding:0;
+  overflow: hidden;
+}
+
+.appNav {
+  padding: 0px 30px;
+  background: rgb(0, 100, 0) none repeat scroll 0% 0%;
+  color: white;
+  display: flex;
+  -moz-box-pack: justify;
+  justify-content: space-between;
+  -moz-box-align: center;
+  align-items: center;
+}
+
+.appNav a {
+  text-decoration: none;
+  color: #fff;
+  width: 20vw;
+}
+
+.navTitle {
+  width: 60vw;
+  text-align: center;
+  margin: 0 auto;
+}
+
+.menu {
+  list-style: outside none none;
+  display: flex;
+  -moz-box-align: center;
+  align-items: center;
+  background: rgb(0, 100, 0) none repeat scroll 0% 0%;
+  color: white;
+  width: 20vw;
+  padding: 3px;
+  flex-wrap: wrap;
+  -moz-box-pack: end;
+  justify-content: flex-end
+}
+
+.menu li {
+  list-style: none;
+  width: 50%;
+  margin: 0 auto;
+}
+.menuLink {
+  color: #fff!important;
+  text-decoration: none;
+  display: block;
+  padding: 0!important;
+  margin: 0!important;
+}
+.container {
+  margin-right: auto;
+  margin-left: auto;
+  padding-left: 15px;
+  padding-right: 15px;
+  margin-top: 140px;
+  width: 60vw;
+}
+.link-table {
+  height: 100%;
+}
+.text-center {
+  color: #333;
+}
+.navbar-nav>li>a {
+  color: #ffffff;
+}
+.navbar-nav>li>a:hover {
+  color: darkgreen;
+}
+
+
+@media (max-width: 1000px) {
+  .container {
+    width: 70vw;
+  }
+  
+}
+
+@media (max-width: 600px) {
+  .container {
+    width: 100vw;
+  }
+  .appNav a {
+    text-decoration: none;
+    color: #fff;
+    width: 30vw;
+  }
+  .navTitle {
+    display: none;
+  }
+  .menu {
+    width: 40%;
+  }
+  .menu li {
+    list-style: none;
+    width: 40%;
+    margin: 0 auto;
+  }
+}
