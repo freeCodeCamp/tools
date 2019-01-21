@@ -30,6 +30,9 @@
     "probot": "^7.2.0"
   },
   "devDependencies": {
+    "@octokit/app": "^2.1.0",
+    "@octokit/request": "^2.3.0",
+    "@octokit/rest": "^16.11.0",
     "expect": "^23.6.0",
     "jest": "^22.4.3",
     "nock": "^10.0.0",

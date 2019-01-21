@@ -32,9 +32,10 @@ const probotUpdateDb = async(context) => {
   } else {
     console.log('add/updated ' + number);
     const files =
-      await context.github.pullRequests.getFiles(context.issue()).data;
+      await context.github.pullRequests.listFiles(context.issue()).data;
     // const filenames = [...files].filename;
-    const filenames = files.map(file => file.filename);
+    const filenames = (
+      files && files.length ? files.map(file => file.filename) : []);
     await PR.updateOne(
       { _id: number },
       { updatedAt: updatedAt,
@@ -52,27 +53,28 @@ const probotUpdateDb = async(context) => {
     });
   }
 
-  // update info collection
-  const [ { firstPR, lastPR }] = await PR.aggregate(
-    [{
-      $group: {
-        _id: null,
-        firstPR: { $min: '$_id' },
-        lastPR: { $max: '$_id' }
-      }
-    }]
-  );
-  const numPRs = await PR.count();
-  const info = {
-    lastUpdate,
-    numPRs,
-    prRange: `${firstPR}-${lastPR}`
-  };
-  await INFO.updateOne(info)
-    .catch(err => {
-      console.log(err);
-    });
-
+  const numPRs = await PR.countDocuments();
+  if (numPRs > 0) {
+    // update info collection
+    const [ { firstPR, lastPR }] = await PR.aggregate(
+      [{
+        $group: {
+          _id: null,
+          firstPR: { $min: '$_id' },
+          lastPR: { $max: '$_id' }
+        }
+      }]
+    );
+    const info = {
+      lastUpdate,
+      numPRs,
+      prRange: `${firstPR}-${lastPR}`
+    };
+    await INFO.updateOne(info)
+      .catch(err => {
+        console.log(err);
+      });
+  }
 
   return existingPR;
 };

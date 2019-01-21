@@ -1,10 +1,17 @@
-// const debug = require('debug')('probot:presolver');
+const debug = require('debug')('probot:presolver');
 const Presolver = require('./server/presolver');
 const config = require('../config');
 // config should be imported before importing any other file
 const mongoose = require('mongoose');
 const path = require('path');
-// const prOpened = require('./test/payloads/events/pullRequests.opened');
+const prOpened = require('./test/fixtures/events/pullRequests.opened');
+const cacheManager = require('cache-manager');
+
+const cache = cacheManager.caching({
+  store: 'memory',
+  ttl: 60 * 60
+  // 1 hour
+});
 
 async function probotPlugin(robot) {
   const events = [
@@ -21,13 +28,20 @@ async function probotPlugin(robot) {
     getState.bind(null, robot);
   });*/
   // robot.log(robot);
+  // robot.on(['pull_request.opened'], record.bind(null, robot));
+  // const dir = path.join(__dirname, '.', config.github.probot.privateKeyID);
+  // const k = await fs.readFile(dir).then((data) => data);
+  // await robot.auth(config.github.probot.clientID, k)
+  // robot.auth()
   // robot.receive({
   //   name: 'pull_request',
   //   payload: prOpened
   // });
   const redirect = robot.route('/');
+  robot.log(robot.router);
   redirect.get('/', async(req, res) => {
     // getState.bind(null, robot);
+    record.bind(null, robot);
     res.redirect('/home');
   });
   const landingPage = robot.route('/home');
@@ -80,6 +94,12 @@ async function probotPlugin(robot) {
         console.log('MongoDB connection unsuccessful');
       });
   }
+}
+
+async function record(app, context) {
+  const presolver = forRepository(context);
+  const prs = await presolver.prInfo.getCount();
+  context.log(prs);
 }
 
 async function presolve(app, context) {
