@@ -1,33 +1,22 @@
+const config = require('../../config');
 const expect = require('expect');
 const { Probot } = require('probot');
-const prOpened = require('./payloads/events/pullRequests.opened');
-const prClosed = require('./payloads/events/pullRequests.closed');
-const prOpenedFiles = require('./payloads/files/files.opened');
-const prExistingFiles = require('./payloads/files/files.existing');
-const prUnrelatedFiles = require('./payloads/files/files.unrelated');
+const prOpened = require('./fixtures/events/pullRequests.opened');
+const prClosed = require('./fixtures/events/pullRequests.closed');
+// const prOpenedFiles = require('./fixtures/files/files.opened');
+// const prExistingFiles = require('./fixtures/files/files.existing');
+// const prUnrelatedFiles = require('./fixtures/files/files.unrelated');
 const probotPlugin = require('..');
 const { PRtest } = require('./utils/testmodels');
-const Presolver = require('../server/presolver');
-const { setupRecorder } = require('nock-record');
-// const { getState } = require('')
-const { getCount, getFirst, getRange } = require('../../lib/get-prs/pr-stats-probot');
-// const mongoose = require('mongoose');
-
-const record = setupRecorder();
-
-const getState = async (context) => {
-  return context
-  // const presolver = forRepository(context);
-  // return presolver._getState(context);
-};
-
-function forRepository(context) {
-  const config = { ...context.repo({ logger: console }) };
-  return new Presolver(context, config);
-}
+// const jwt = require('jsonwebtoken');
+// const { setupRecorder } = require('nock-record');
+// const fs = require('fs').promises;
+// const path = require('path');
+const { owner, repo, octokitConfig } = require('../../lib/constants.js');
+const PrInfo = require('../../lib/get-prs/index-probot.js');
 
 describe('Presolver', () => {
-  let probot, github, app;
+  let probot, app, github, prInfo;
 
   afterEach(async (done) => {
     await PRtest.deleteMany({}).catch(err => console.log(err));
@@ -35,80 +24,85 @@ describe('Presolver', () => {
   });
 
   beforeEach( async() => {
-
     probot = new Probot({});
-    // Load our app into probot
     app = await probot.load(probotPlugin);
-    await PRtest.deleteMany({}).catch(err => console.log(err));
-    // This is an easy way to mock out the GitHub API
-    // https://probot.github.io/docs/testing/
-    github = {
-      issues: {
-        /* eslint-disable no-undef */
-        createComment: jest.fn().mockReturnValue(Promise.resolve({})),
-        addLabels: jest.fn(),
-        getLabel: jest.fn().mockImplementation(() => Promise.resolve([])),
-        createLabel: jest.fn()
-        /* eslint-enable no-undef */
-      },
-      repos: {
-        getContent: () =>
-          Promise.resolve({
-            data: Buffer.from(
-              `
-          issueOpened: Message
-          pullRequestOpened: Message
-          `
-            ).toString('base64')
-          })
-      },
-      pullRequests: {
-        // eslint-disable-next-line no-undef
-        listFiles: jest.fn().mockImplementation((issue) => {
-          const { number } = issue;
-          let data;
-          switch (number) {
-            case 31525:
-              data = prOpenedFiles;
-              break;
-            case 33363:
-              data = prExistingFiles;
-              break;
-            case 34559:
-              data = prUnrelatedFiles;
-              break;
-            default:
-              data = prExistingFiles;
-          }
-          return { data };
-        }),
-        // eslint-disable-next-line no-undef
-        list: jest
-          .fn()
-          .mockImplementation((options) => {
-            console.log(options);
-            return {
-              data: [
-                prOpened.pull_request
-              ]
-            };
-          }).catch(() => new Error('err'))
-      },
-      search: {
-        // eslint-disable-next-line no-undef
-        issues: jest.fn().mockImplementation(() => ({
-          data: [ ]
-        })).catch(() => new Error('err'))
-      }
-    };
+    github = require('./fixtures/github_mock.js');
+
     app.auth = () => Promise.resolve(github);
+    prInfo = await new PrInfo(github, owner, repo);
+    // const dir =
+    //   path.join(__dirname, '..', config.github.probot.privateKeyPath);
+    // const k = await fs.readFile(dir).then((data) => data);
+    // // Load our app into probot
+    // await PRtest.deleteMany({}).catch(err => console.log(err));
+    //
+    // let octoConfig = octokitConfig;
+    // const App = require('@octokit/app');
+    // // // const request = require('@octokit/request');
+    // app = new App({
+    //   id: config.github.probot.appID,
+    //   privateKey: k
+    //   // Buffer.from(k, 'base64').toString()
+    // });
+    // const token = await app.getSignedJsonWebToken();
+    // const token = await app.getInstallationAccessToken({ id: 585398 });
+    // console.log(token);
+    // const createApp = async (options) => {
+    //   const payload = {
+    //     exp: Math.floor(Date.now() / 1000) + 60,
+    //     iat: Math.floor(Date.now() / 1000),
+    //     iss: options.id
+    //   };
+    //   // Sign with RSA SHA256
+    //   const sig =
+    //     await jwt.sign(payload, options.cert, { algorithm: 'RS256' });
+    //   return sig;
+    // };
+    // const token = await createApp({
+    //   id: config.github.probot.appID,
+    //   cert: Buffer.from(k, 'base64').toString()
+    // });
+    // octoConfig.headers.authorization = `token ${token}`;
+    // github =
+    // require('@octokit/rest')(octoConfig);
+    // await github.authenticate({
+    //   type: 'app',
+    //   token: token
+    // });
+    // console.log(github);
+    // const issue = await request(`GET /repos/${owner}/${repo}/issues/9`, octoConfig);
+    // console.log(issue);
   });
 
   test('should receive repo info', async() => {
-    await probot.receive({
-      name: 'pull_request',
-      payload: prOpened
-    });
+    //     const octokit = require('@octokit/rest')(octokitConfig);
+    //         //   console.log(k);
+    //     const createApp = async (options) => {
+    //       const payload = {
+    //         exp: Math.floor(Date.now() / 1000) + 60,
+    //         iat: Math.floor(Date.now() / 1000),
+    //         iss: options.id
+    //       };
+    //       // Sign with RSA SHA256
+    //       const sig =
+    // await jwt.sign(payload, options.cert, { algorithm: 'RS256' });
+    //       return sig;
+    //     };
+    //     const token = await createApp({
+    //       id: config.github.probot.appID,
+    //       cert: Buffer.from(k, 'base64').toString()
+    //     });
+    //     console.log(token);
+    //     const octokitAuth = {
+    //       type: 'app',
+    //       token: token
+    //     };
+    //     await octokit.authenticate(octokitAuth);
+
+    // await probot.receive({
+    //   name: 'pull_request',
+    //   payload: prOpened
+    // });
 
     /*
     expect()
@@ -121,9 +115,9 @@ describe('Presolver', () => {
       expect(result).not.toBe(null);
     });
     // const result = app;//await getState(null, app);
-*/
+    */
     /* / expect(github.)*/
-    expect(github.pullRequests.list).toHaveBeenCalled()
+    // expect(github.search.issues).toHaveBeenCalled()
     /* .toHaveBeenCalledWith({
       state: 'open',
       base: 'master',
@@ -135,15 +129,15 @@ describe('Presolver', () => {
     });*/
   });
 
-  test(`adds a label if a PR has changes to files targeted by an
-    existing PR`, async () => {
-    // Receive a webhook event
-    await probot.receive({
-      name: 'pull_request',
-      payload: prOpened
-    });
-    expect(github.issues.addLabels).toHaveBeenCalled();
-  });
+  // test(`adds a label if a PR has changes to files targeted by an
+  //   existing PR`, async () => {
+  //   // Receive a webhook event
+  //   await probot.receive({
+  //     name: 'pull_request',
+  //     payload: prOpened
+  //   });
+  //   expect(github.issues.addLabels).toHaveBeenCalled();
+  // });
 /*
   test('does not add a label when files do not coincide', async () => {
     await probot.receive({
@@ -151,6 +145,24 @@ describe('Presolver', () => {
       payload: prUnrelated
     });
     expect(github.issues.addLabels).toHaveBeenCalledTimes(0);
+  });
+*/
+  test('should get number of first PR', async () => {
+    const first = await prInfo.getFirst();
+    console.log(first);
+    expect(first).toBe(9);
+  });
+
+  test('should get a count of PRs', async () => {
+    const count = await prInfo.getCount();
+    console.log(count);
+    expect(count).toBe(1);
+  });
+
+  test('should get a range of PRs', async () => {
+    const range = await prInfo.getRange();
+    console.log(range);
+    expect(range).toEqual([9, 9]);
   });
 
   test('db should update if the action is opened', async () => {
@@ -199,7 +211,7 @@ describe('Presolver', () => {
       .catch(err => console.log(err));
     expect(result).toBe(null);
 
-  }); */
+  });
 });
 
 // For more information about testing with Jest see:
