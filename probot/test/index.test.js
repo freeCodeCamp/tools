@@ -8,161 +8,155 @@ const prClosed = require('./fixtures/events/pullRequests.closed');
 // const prUnrelatedFiles = require('./fixtures/files/files.unrelated');
 const probotPlugin = require('..');
 const { PRtest } = require('./utils/testmodels');
-// const jwt = require('jsonwebtoken');
-// const { setupRecorder } = require('nock-record');
-// const fs = require('fs').promises;
-// const path = require('path');
-const { owner, repo, octokitConfig } = require('../../lib/constants.js');
+
+// Was using the Octokit API to get the fixture json, `./fixtures/github_mock`,
+// after unsuccessfully attempting to use nock-record to get output from these
+// API calls made in tests
+// const { owner, repo, octokitConfig } = require('../../lib/constants.js');
+const github = require('./fixtures/github_mock.js');
+
+// PrInfo can be called from Presolver because it's imported there. The problem
+// is currently that I can't access the probot Context directly. I must use i.e.
+// probot.receive({ name: 'pull_request', payload: '...'}), achieved in practice
+// via an Event. Passing the `app` itself doesn't work. ;) We need an Event.
+// const Presolver = require('../server/presolver');
 const PrInfo = require('../../lib/get-prs/index-probot.js');
 
-describe('Presolver', () => {
-  let probot, app, github, prInfo;
+// It's unclear whether we need to disconnect mongoose because there
+// is a conditional connector in the app itself, which these tests start via
+// probot.load(probotPlugin). Forum discussions mention mongoose connections
+// as the reason jest tests don't exit after success, but neither
+// mongoose.disconnect() nor mongoose.connection.close() fix it.
+// const mongoose = require('mongoose');
 
-  afterEach(async (done) => {
+const { owner, repo } = config.github;
+
+describe('PrInfo accessed directly', () => {
+  let methodProps, prInfo;
+  afterEach(async() => {
+
+  });
+
+  beforeEach(async() => {
+    methodProps = {
+      state: 'open',
+      base: 'master',
+      sort: 'created',
+      page: 1,
+      owner: owner,
+      repo: repo
+    };
+    prInfo = await new PrInfo(github, owner, repo);
+    // const cxconfig = { owner, repo };
+    // presolver = await new Presolver(prOpened, cxconfig);
+    // prInfo = presolver.prInfo(github, owner, repo);
+  });
+  test('should receive repo info', async() => {
+  });
+
+  test('should get the number of first PR', async () => {
+    // eslint-disable-next-line camelcase
+    methodProps.per_page = 1;
+    methodProps.direction = 'asc';
+    const first = await prInfo.getFirst();
+    expect(github.pullRequests.list).toHaveBeenCalledWith(methodProps);
+    expect(first).toBe(9);
+  });
+
+  test('should get a count of PRs', async () => {
+    methodProps.q = `repo:${owner}/${repo}+is:open+type:pr+base:master`;
+    // eslint-disable-next-line camelcase
+    methodProps.per_page = 1;
+    methodProps.order = 'asc';
+    // search endpoint doesn't require these parameters
+    delete methodProps.base;
+    delete methodProps.owner;
+    delete methodProps.repo;
+    delete methodProps.state;
+
+    const count = await prInfo.getCount();
+    expect(github.search.issues).toHaveBeenCalledWith(methodProps);
+    expect(count).toBe(1);
+  });
+
+  test('should get a range of PRs', async () => {
+    // eslint-disable-next-line camelcase
+    methodProps.per_page = 1;
+    methodProps.direction = 'desc';
+    const range = await prInfo.getRange();
+    expect(github.pullRequests.list).toHaveBeenCalledWith(methodProps);
+    // fsr I can only test the second pullRequests.list call that uses
+    // direction: 'desc'
+    // methodProps.direction = 'desc';
+    // expect(github.pullRequests.list).toHaveBeenCalledWith(methodProps);
+    expect(range).toEqual([9, 9]);
+  });
+
+  test('should get list of PRs within a range', async () => {
+    methodProps.direction = 'desc';
+    // eslint-disable-next-line camelcase
+    methodProps.per_page = 1;
+    const prPropsToGet = ['number', 'user', 'title', 'updated_at'];
+    const getPRs = await prInfo.getPRs(1, 9, 9, prPropsToGet);
+    expect(github.pullRequests.list).toHaveBeenCalledWith(methodProps);
+    expect(getPRs).not.toEqual(prOpened);
+  });
+});
+
+describe('PrInfo accessed via the probot', () => {
+  let methodProps, probot, app;
+  afterEach(async() => {
+
+  });
+
+  beforeEach(async() => {
+    probot = new Probot({});
+    app = await probot.load(probotPlugin);
+    app.auth = () => Promise.resolve(github);
+
+    methodProps = {
+      state: 'open',
+      base: 'master',
+      sort: 'created',
+      page: 1,
+      owner: owner,
+      repo: repo
+    };
+  });
+
+  test('should get a count of PRs using context.github in probot', async () => {
+    probot.receive({
+      name: 'pull_request',
+      payload: prClosed
+    });
+    methodProps.q = `repo:${owner}/${repo}+is:open+type:pr+base:master`;
+    // eslint-disable-next-line camelcase
+    methodProps.per_page = 1;
+    methodProps.order = 'asc';
+    // search endpoint doesn't require these parameters
+    delete methodProps.base;
+    delete methodProps.owner;
+    delete methodProps.repo;
+    delete methodProps.state;
+
+    expect(github.search.issues).toHaveBeenCalledWith(methodProps);
+  });
+});
+
+describe('Presolver', () => {
+  let probot, app;
+  afterEach(async () => {
     await PRtest.deleteMany({}).catch(err => console.log(err));
-    done();
+    // TODO
+    // Nothing seems to exit the tests. Also see commands in package.json
+    // await mongoose.disconnect();
+    // app = null;
   });
 
   beforeEach( async() => {
     probot = new Probot({});
     app = await probot.load(probotPlugin);
-    github = require('./fixtures/github_mock.js');
-
     app.auth = () => Promise.resolve(github);
-    prInfo = await new PrInfo(github, owner, repo);
-    // const dir =
-    //   path.join(__dirname, '..', config.github.probot.privateKeyPath);
-    // const k = await fs.readFile(dir).then((data) => data);
-    // // Load our app into probot
-    // await PRtest.deleteMany({}).catch(err => console.log(err));
-    //
-    // let octoConfig = octokitConfig;
-    // const App = require('@octokit/app');
-    // // // const request = require('@octokit/request');
-    // app = new App({
-    //   id: config.github.probot.appID,
-    //   privateKey: k
-    //   // Buffer.from(k, 'base64').toString()
-    // });
-    // const token = await app.getSignedJsonWebToken();
-    // const token = await app.getInstallationAccessToken({ id: 585398 });
-    // console.log(token);
-    // const createApp = async (options) => {
-    //   const payload = {
-    //     exp: Math.floor(Date.now() / 1000) + 60,
-    //     iat: Math.floor(Date.now() / 1000),
-    //     iss: options.id
-    //   };
-    //   // Sign with RSA SHA256
-    //   const sig =
-    //     await jwt.sign(payload, options.cert, { algorithm: 'RS256' });
-    //   return sig;
-    // };
-    // const token = await createApp({
-    //   id: config.github.probot.appID,
-    //   cert: Buffer.from(k, 'base64').toString()
-    // });
-    // octoConfig.headers.authorization = `token ${token}`;
-    // github =
-    // require('@octokit/rest')(octoConfig);
-    // await github.authenticate({
-    //   type: 'app',
-    //   token: token
-    // });
-    // console.log(github);
-    // const issue = await request(`GET /repos/${owner}/${repo}/issues/9`, octoConfig);
-    // console.log(issue);
-  });
-
-  test('should receive repo info', async() => {
-    //     const octokit = require('@octokit/rest')(octokitConfig);
-    //         //   console.log(k);
-    //     const createApp = async (options) => {
-    //       const payload = {
-    //         exp: Math.floor(Date.now() / 1000) + 60,
-    //         iat: Math.floor(Date.now() / 1000),
-    //         iss: options.id
-    //       };
-    //       // Sign with RSA SHA256
-    //       const sig =
-    // await jwt.sign(payload, options.cert, { algorithm: 'RS256' });
-    //       return sig;
-    //     };
-    //     const token = await createApp({
-    //       id: config.github.probot.appID,
-    //       cert: Buffer.from(k, 'base64').toString()
-    //     });
-    //     console.log(token);
-    //     const octokitAuth = {
-    //       type: 'app',
-    //       token: token
-    //     };
-    //     await octokit.authenticate(octokitAuth);
-
-    // await probot.receive({
-    //   name: 'pull_request',
-    //   payload: prOpened
-    // });
-
-    /*
-    expect()
-    */
-    /* app.on('pull_request.opened', async (robot) => {
-      const { completeRecording } = await record('pr-stats');
-      const result = getState.bind(app);
-      completeRecording();
-      console.log(result);
-      expect(result).not.toBe(null);
-    });
-    // const result = app;//await getState(null, app);
-    */
-    /* / expect(github.)*/
-    // expect(github.search.issues).toHaveBeenCalled()
-    /* .toHaveBeenCalledWith({
-      state: 'open',
-      base: 'master',
-      sort: 'created',
-      direction: 'asc',
-      page: 1,
-      // eslint-disable-next-line camelcase
-      per_page: 100
-    });*/
-  });
-
-  // test(`adds a label if a PR has changes to files targeted by an
-  //   existing PR`, async () => {
-  //   // Receive a webhook event
-  //   await probot.receive({
-  //     name: 'pull_request',
-  //     payload: prOpened
-  //   });
-  //   expect(github.issues.addLabels).toHaveBeenCalled();
-  // });
-/*
-  test('does not add a label when files do not coincide', async () => {
-    await probot.receive({
-      name: 'pull_request.opened',
-      payload: prUnrelated
-    });
-    expect(github.issues.addLabels).toHaveBeenCalledTimes(0);
-  });
-*/
-  test('should get number of first PR', async () => {
-    const first = await prInfo.getFirst();
-    console.log(first);
-    expect(first).toBe(9);
-  });
-
-  test('should get a count of PRs', async () => {
-    const count = await prInfo.getCount();
-    console.log(count);
-    expect(count).toBe(1);
-  });
-
-  test('should get a range of PRs', async () => {
-    const range = await prInfo.getRange();
-    console.log(range);
-    expect(range).toEqual([9, 9]);
   });
 
   test('db should update if the action is opened', async () => {

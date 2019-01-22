@@ -15,7 +15,7 @@
     "start": "probot run esm ./index.js",
     "start-probot": "cross-env TEST_ENV=false probot run ./index.js",
     "lint": "standard --fix",
-    "test": "cross-env TEST_ENV=true jest --forceExit && standard",
+    "test": "cross-env TEST_ENV=true jest --forceExit --verbose --detectOpenHandles && standard",
     "test:watch": "jest --watch --notify --notifyMode=change --coverage"
   },
   "dependencies": {
@@ -34,7 +34,7 @@
     "@octokit/request": "^2.3.0",
     "@octokit/rest": "^16.11.0",
     "expect": "^23.6.0",
-    "jest": "^22.4.3",
+    "jest": "^23.6.0",
     "nock": "^10.0.0",
     "nock-record": "^0.3.3",
     "nodemon": "^1.17.2",
