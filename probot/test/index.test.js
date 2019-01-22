@@ -99,7 +99,7 @@ describe('PrInfo accessed directly', () => {
     const prPropsToGet = ['number', 'user', 'title', 'updated_at'];
     const getPRs = await prInfo.getPRs(1, 9, 9, prPropsToGet);
     expect(github.pullRequests.list).toHaveBeenCalledWith(methodProps);
-    expect(getPRs).not.toEqual(prOpened);
+    expect(getPRs.title).toEqual(prOpened.title);
   });
 });
 
