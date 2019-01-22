@@ -1,17 +1,9 @@
-const debug = require('debug')('probot:presolver');
-const Presolver = require('./server/presolver');
+// const debug = require('debug')('probot:presolver');
 const config = require('../config');
 // config should be imported before importing any other file
+const Presolver = require('./server/presolver');
 const mongoose = require('mongoose');
 const path = require('path');
-const prOpened = require('./test/fixtures/events/pullRequests.opened');
-const cacheManager = require('cache-manager');
-
-const cache = cacheManager.caching({
-  store: 'memory',
-  ttl: 60 * 60
-  // 1 hour
-});
 
 async function probotPlugin(robot) {
   const events = [
@@ -19,31 +11,20 @@ async function probotPlugin(robot) {
     'pull_request.edited',
     'pull_request.synchronize',
     'pull_request.reopened',
-    'pull_request.labeled',
-    'pull_request.closed'
+    'pull_request.labeled'
+    // 'pull_request.closed'
   ];
-  robot.on(events, presolve.bind(null, robot));
-  /* robot.on(events, (robot) => {
-    robot.log(robot);
-    getState.bind(null, robot);
-  });*/
-  // robot.log(robot);
-  // robot.on(['pull_request.opened'], record.bind(null, robot));
-  // const dir = path.join(__dirname, '.', config.github.probot.privateKeyID);
-  // const k = await fs.readFile(dir).then((data) => data);
-  // await robot.auth(config.github.probot.clientID, k)
-  // robot.auth()
-  // robot.receive({
-  //   name: 'pull_request',
-  //   payload: prOpened
-  // });
+  robot.on(events, presolve.bind(robot));
+  // Using the 'pull_request.closed' event arbitrarily for now to test
+  // the PrInfo module called via the probot.
+  robot.on(['pull_request.closed'], prinfo.bind(robot));
+
   const redirect = robot.route('/');
-  robot.log(robot.router);
-  redirect.get('/', async(req, res) => {
-    // getState.bind(null, robot);
-    record.bind(null, robot);
-    res.redirect('/home');
-  });
+
+  // Note that probot uses this method for logging:
+  // robot.log , context.log , req.log
+  // robot.log(robot.router);
+  redirect.get('/', async(req, res) => res.redirect('/home'));
   const landingPage = robot.route('/home');
   landingPage.use(require('express').static('public'));
   const app = robot.route('/dashboard');
@@ -96,13 +77,14 @@ async function probotPlugin(robot) {
   }
 }
 
-async function record(app, context) {
+async function prinfo(context) {
   const presolver = forRepository(context);
-  const prs = await presolver.prInfo.getCount();
-  context.log(prs);
+  const prs = await presolver.prInfo;
+  const count = prs.getCount();
+  context.log(count);
 }
 
-async function presolve(app, context) {
+async function presolve(context) {
   const presolver = forRepository(context);
   const pullRequest = getPullRequest(context);
   return presolver.presolve(pullRequest);

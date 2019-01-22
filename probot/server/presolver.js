@@ -39,7 +39,7 @@ class Presolver {
   async presolve(pullRequest) {
     Object.assign(this.pullRequest, pullRequest);
     await this._updateDb(this.context);
-    console.log(this.methodProps);
+    // console.log(this.methodProps);
     await this._ensurePresolverLabelExists();
     await this._getState();
     const labelObj = this.config.labelPRConflict;
@@ -48,30 +48,6 @@ class Presolver {
     }
   }
   async _getState() {
-    // const { owner, repo } = this.config;
-
-    // Object.assign(this.context, context);
-    // console.log(context, this.context);
-    // const getInfo = await INFO.find({}).sort({lastUpdate: -1});
-    // const lastUpdate = JSON.parse(JSON.stringify(getInfo))[0].lastUpdate;
-    // const count = await this.github.search({
-    //   q: `repo:${owner}/${repo}+is:open+type:pr+base:master`,
-    //   since: lastUpdate,
-    //   sort: 'created',
-    //   order: 'asc',
-    //   page: 1,
-    //   // eslint-disable-next-line camelcase
-    //   per_page: 1
-    // })
-    // .catch(err => {
-    //    console.log(err);
-    // });
-    // this.context.log(count);
-    // return count;
-    // console.log(count);
-    // console.log(JSON.parse(JSON.stringify(lastUpdate))[0]);
-    // console.log(this.context)
-    // console.log(this.context.issue())
     const files = await
       this.github.pullRequests.listFiles(this.context.issue());
     // console.log(files)

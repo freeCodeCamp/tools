@@ -1,11 +1,12 @@
 const prExisting = require('./events/pullRequests.existing');
-const prOpened = require('./events/pullRequests.opened');
-const prClosed = require('./events/pullRequests.closed');
 const prOpenedFiles = require('./files/files.opened');
 const prExistingFiles = require('./files/files.existing');
 const prUnrelatedFiles = require('./files/files.unrelated');
+/* eslint-disable camelcase */
+/* eslint-disable no-undef */
 
 module.exports = {
+  hasNextPage: jest.fn(),
   activity: {},
   apps: {},
   authorization: {},
@@ -333,7 +334,7 @@ module.exports = {
   search: {
       code: jest.fn(),
       commits: jest.fn(),
-      issues: jest.fn((opts) => Promise.resolve({data: {total_count: 1}})),
+      issues: jest.fn(() => Promise.resolve({data: {total_count: 1}})),
       labels: jest.fn(),
       repos: jest.fn(),
       topics: jest.fn(),
@@ -341,3 +342,5 @@ module.exports = {
   teams: {},
   users: {}
 };
+/* eslint-enable camelcase */
+/* eslint-enable no-undef */
