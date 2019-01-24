@@ -2,12 +2,15 @@ const prExisting = require('./events/pullRequests.existing');
 const prOpenedFiles = require('./files/files.opened');
 const prExistingFiles = require('./files/files.existing');
 const prUnrelatedFiles = require('./files/files.unrelated');
+const path = require('path');
+const fs = require('fs');
 /* eslint-disable camelcase */
 /* eslint-disable no-undef */
 
 class Mock {
-  constructor(recordedSnaps, key) {
+  constructor(key) {
     this.key = key;
+    this.recordedSnaps =
     this.gh = {
       hasNextPage: jest.fn(Promise.resolve('deprecated')),
       activity: {},
@@ -338,7 +341,12 @@ class Mock {
           code: jest.fn(),
           commits: jest.fn(),
           issuesAndPullRequests: jest.fn(
-            () => Promise.resolve({data: {total_count: recordedSnaps[key] }})),
+            () => Promise.resolve(
+              {data: {
+                total_count: fs.readFileSync(
+                  path.join(__dirname, '..', '__snapshots__', 'index.test.js.snap')
+                )[key]
+              }})),
           labels: jest.fn(),
           repos: jest.fn(),
           topics: jest.fn(),

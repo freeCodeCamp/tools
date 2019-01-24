@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PrInfo API calls should get an Array with two Numbers that represent the range
+  of open PRs 1`] = `
+Array [
+  6,
+  6,
+]
+`;
+
+exports[`PrInfo API calls should get an accurate count of open PRs 1`] = `undefined`;
+
+exports[`PrInfo API calls should get the Number of first PR 1`] = `6`;

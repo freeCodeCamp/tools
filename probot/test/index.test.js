@@ -1,14 +1,14 @@
 const config = require('../../config');
 const expect = require('expect');
 const { Probot } = require('probot');
-const fetch = require('node-fetch');
+// const fetch = require('node-fetch');
 const nock = require('nock');
 const MockGH = require('./fixtures/github_mock');
 // const prOpenedFiles = require('./payloads/files/files.opened');
 // const prExistingFiles = require('./payloads/files/files.existing');
 // const prUnrelatedFiles = require('./payloads/files/files.unrelated');
-const fs = require('fs');
-const path = require('path');
+// const fs = require('fs');
+// const path = require('path');
 const prOpened = require('./fixtures/events/pullRequests.opened');
 const prClosed = require('./fixtures/events/pullRequests.closed');
 const prReopened = require('./fixtures/events/pullRequests.closed');
@@ -30,7 +30,7 @@ const PrInfo = require('../../lib/get-prs/index-probot.js');
 // const mongoose = require('mongoose');
 
 const { owner, repo } = config.github;
-const prPropsToGet = ['number', 'user', 'title', 'updated_at'];
+// const prPropsToGet = ['number', 'user', 'title', 'updated_at'];
 
 describe('PrInfo API calls', async () => {
   let methodProps, github, prInfo;
@@ -51,8 +51,7 @@ describe('PrInfo API calls', async () => {
 
   test('should get an accurate count of open PRs', async () => {
     github = await new MockGH(
-      require('./__snapshots__/index.test.js.snap'),
-      'should get an accurate count of open PRs')
+            'should get an accurate count of open PRs')
     .gh;
     prInfo = await new PrInfo(github, owner, repo);
     methodProps.q = `repo:${owner}/${repo}+is:open+type:pr+base:master`;
@@ -65,15 +64,15 @@ describe('PrInfo API calls', async () => {
     delete methodProps.repo;
     delete methodProps.state;
     const count = await prInfo.getCount();
-    expect(github.search.issuesAndPullRequests).toHaveBeenCalledWith(methodProps);
+    expect(github.search.issuesAndPullRequests)
+    .toHaveBeenCalledWith(methodProps);
     expect(count).toMatchSnapshot();
   });
 
   test(`should get an Array with two Numbers that represent the range
   of open PRs`, async() => {
     github = await new MockGH(
-      require('./__snapshots__/index.test.js.snap'),
-      `should get an Array with two Numbers that represent the range
+            `should get an Array with two Numbers that represent the range
     of open PRs`)
     .gh;
 
@@ -88,8 +87,7 @@ describe('PrInfo API calls', async () => {
 
   test('should get the Number of first PR', async () => {
     github = await new MockGH(
-      require('./__snapshots__/index.test.js.snap'),
-      'should get the Number of first PR')
+            'should get the Number of first PR')
     .gh;
     prInfo = await new PrInfo(github, owner, repo);
     // eslint-disable-next-line camelcase
@@ -102,8 +100,7 @@ describe('PrInfo API calls', async () => {
 
   test('should get an Array of PRs by count and range', async() => {
     github = await new MockGH(
-      require('./__snapshots__/index.test.js.snap'),
-      'should get an Array of PRs by count and range')
+            'should get an Array of PRs by count and range')
       .gh;
     prInfo = await new PrInfo(github, owner, repo);
     methodProps.direction = 'desc';
@@ -161,7 +158,8 @@ describe('PrInfo API calls', async () => {
 //     delete methodProps.state;
 //
 //     const count = await prInfo.getCount();
-//     expect(github.search.issuesAndPullRequests).toHaveBeenCalledWith(methodProps);
+//     expect(github.search.issuesAndPullRequests)
+//  .toHaveBeenCalledWith(methodProps);
 //     expect(count).toBe(1);
 //   });
 //
@@ -187,7 +185,7 @@ describe('PrInfo API calls', async () => {
 //     expect(getPRs.title).toEqual(prOpened.title);
 //   });
 // });
-/*
+
 describe('PrInfo accessed via the probot', () => {
   const github = require('./fixtures/github_mock.js');
   let methodProps, probot, app;
@@ -225,7 +223,8 @@ describe('PrInfo accessed via the probot', () => {
     delete methodProps.repo;
     delete methodProps.state;
 
-    expect(github.search.issuesAndPullRequests).toHaveBeenCalledWith(methodProps);
+    expect(github.search.issuesAndPullRequests)
+    .toHaveBeenCalledWith(methodProps);
   });
 });
 
@@ -277,6 +276,5 @@ describe('Presolver', () => {
 
   });
 });
-*/
 // For more information about testing with Jest see:
 // https://facebook.github.io/jest/

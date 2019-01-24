@@ -9,7 +9,7 @@
     "build": "lerna run build",
     "postinstall": "npm run bootstrap",
     "test": "run-p test:*",
-    "test-update": "TEST_ENV=true jest --updateSnapshot --forceExit --detectOpenHandles && standard",
+    "test-update": "cross-env TEST_ENV=true npx jest --updateSnapshot --forceExit --detectOpenHandles -- ./test-record/index.js",
     "test:probot": "cd ./probot && npm run test",
     "test:client": "cd ./probot/client && npm run test",
     "format": "prettier --write es5 ./**/*.{js,json} && npm run lint",
@@ -22,6 +22,7 @@
   "devDependencies": {
     "bunyan": "^1.8.12",
     "bunyan-format": "^0.2.1",
+    "cross-env": "^5.2.0",
     "dotenv": "^6.2.0",
     "eslint": "^5.9.0",
     "eslint-config-freecodecamp": "^1.1.1",
