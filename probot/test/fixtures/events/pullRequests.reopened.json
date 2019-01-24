@@ -1,116 +1,67 @@
 {
-  "action": "opened",
+  "action": "reopened",
   "number": 9,
   "pull_request": {
-    "url": "https://api.github.com/repos/freeCodeCamp-rocks/freeCodeCamp/pulls/6",
-    "id": 232204579,
-    "node_id": "MDExOlB1bGxSZXF1ZXN0MjMyMjA0NTc5",
-    "html_url": "https://github.com/freeCodeCamp-rocks/freeCodeCamp/pull/6",
-    "diff_url": "https://github.com/freeCodeCamp-rocks/freeCodeCamp/pull/6.diff",
-    "patch_url": "https://github.com/freeCodeCamp-rocks/freeCodeCamp/pull/6.patch",
-    "issue_url": "https://api.github.com/repos/freeCodeCamp-rocks/freeCodeCamp/issues/6",
-    "number": 6,
+    "url": "https://api.github.com/repos/freeCodeCamp-rocks/freeCodeCamp/pulls/9",
+    "id": 244603336,
+    "node_id": "MDExOlB1bGxSZXF1ZXN0MjQ0NjAzMzM2",
+    "html_url": "https://github.com/freeCodeCamp-rocks/freeCodeCamp/pull/9",
+    "diff_url": "https://github.com/freeCodeCamp-rocks/freeCodeCamp/pull/9.diff",
+    "patch_url": "https://github.com/freeCodeCamp-rocks/freeCodeCamp/pull/9.patch",
+    "issue_url": "https://api.github.com/repos/freeCodeCamp-rocks/freeCodeCamp/issues/9",
+    "number": 9,
     "state": "open",
     "locked": false,
-    "title": "Update add-two-numbers-with-javascript.spanish.md",
+    "title": "Update index.md",
     "user": {
-      "login": "RandellDawson",
-      "id": 5313213,
-      "node_id": "MDQ6VXNlcjUzMTMyMTM=",
-      "avatar_url": "https://avatars2.githubusercontent.com/u/5313213?v=4",
+      "login": "raisedadead",
+      "id": 1884376,
+      "node_id": "MDQ6VXNlcjE4ODQzNzY=",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/1884376?v=4",
       "gravatar_id": "",
-      "url": "https://api.github.com/users/RandellDawson",
-      "html_url": "https://github.com/RandellDawson",
-      "followers_url": "https://api.github.com/users/RandellDawson/followers",
-      "following_url": "https://api.github.com/users/RandellDawson/following{/other_user}",
-      "gists_url": "https://api.github.com/users/RandellDawson/gists{/gist_id}",
-      "starred_url": "https://api.github.com/users/RandellDawson/starred{/owner}{/repo}",
-      "subscriptions_url": "https://api.github.com/users/RandellDawson/subscriptions",
-      "organizations_url": "https://api.github.com/users/RandellDawson/orgs",
-      "repos_url": "https://api.github.com/users/RandellDawson/repos",
-      "events_url": "https://api.github.com/users/RandellDawson/events{/privacy}",
-      "received_events_url": "https://api.github.com/users/RandellDawson/received_events",
+      "url": "https://api.github.com/users/raisedadead",
+      "html_url": "https://github.com/raisedadead",
+      "followers_url": "https://api.github.com/users/raisedadead/followers",
+      "following_url": "https://api.github.com/users/raisedadead/following{/other_user}",
+      "gists_url": "https://api.github.com/users/raisedadead/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/raisedadead/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/raisedadead/subscriptions",
+      "organizations_url": "https://api.github.com/users/raisedadead/orgs",
+      "repos_url": "https://api.github.com/users/raisedadead/repos",
+      "events_url": "https://api.github.com/users/raisedadead/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/raisedadead/received_events",
       "type": "User",
       "site_admin": false
     },
-    "body": "<!-- Please follow this checklist and put an x in each of the boxes, like this: [x]. It will ensure that our team takes your pull request seriously. -->\r\n\r\n- [x ] I have read [freeCodeCamp's contribution guidelines](https://github.com/freeCodeCamp/freeCodeCamp/blob/master/CONTRIBUTING.md).\r\n- [x ] My pull request has a descriptive title (not a vague title like `Update index.md`)\r\n- [x ] My pull request targets the `master` branch of freeCodeCamp.\r\n- [x ] None of my changes are plagiarized from another source without proper attribution.\r\n- [x ] My article does not contain shortened URLs or affiliate links.\r\n\r\nIf your pull request closes a GitHub issue, replace the XXXXX below with the issue number.\r\n\r\nCloses #XXXXX\r\n",
-    "created_at": "2018-11-20T06:23:12Z",
-    "updated_at": "2018-11-23T08:37:33Z",
+    "body": "<!-- Please follow this checklist and put an x in each of the boxes, like this: [x]. It will ensure that our team takes your pull request seriously. -->\r\n\r\n- [ ] I have read [freeCodeCamp's contribution guidelines](https://github.com/freeCodeCamp/freeCodeCamp/blob/master/CONTRIBUTING.md).\r\n- [ ] My pull request has a descriptive title (not a vague title like `Update index.md`)\r\n- [ ] My pull request targets the `master` branch of freeCodeCamp.\r\n- [ ] None of my changes are plagiarized from another source without proper attribution.\r\n- [ ] My article does not contain shortened URLs or affiliate links.\r\n\r\nIf your pull request closes a GitHub issue, replace the XXXXX below with the issue number.\r\n\r\nCloses #XXXXX\r\n",
+    "created_at": "2019-01-14T22:09:07Z",
+    "updated_at": "2019-01-14T22:16:10Z",
     "closed_at": null,
     "merged_at": null,
-    "merge_commit_sha": "261b0e60be8f61f0b03adfc160183a7ae2dfab3f",
+    "merge_commit_sha": "4d042b814088ef5828a2fa8be5a9d6f69a36109f",
     "assignee": null,
-    "assignees": [],
-    "requested_reviewers": [],
-    "requested_teams": [],
+    "assignees": [
+
+    ],
+    "requested_reviewers": [
+
+    ],
+    "requested_teams": [
+
+    ],
     "labels": [
-      {
-        "id": 1134570490,
-        "node_id": "MDU6TGFiZWwxMTM0NTcwNDkw",
-        "url": "https://api.github.com/repos/freeCodeCamp-rocks/freeCodeCamp/labels/language:%20Chinese",
-        "name": "language: Chinese",
-        "color": "ededed",
-        "default": false
-      },
-      {
-        "id": 1134565881,
-        "node_id": "MDU6TGFiZWwxMTM0NTY1ODgx",
-        "url": "https://api.github.com/repos/freeCodeCamp-rocks/freeCodeCamp/labels/language:%20Russian",
-        "name": "language: Russian",
-        "color": "ededed",
-        "default": false
-      },
-      {
-        "id": 1133800882,
-        "node_id": "MDU6TGFiZWwxMTMzODAwODgy",
-        "url": "https://api.github.com/repos/freeCodeCamp-rocks/freeCodeCamp/labels/language:%20Spanish",
-        "name": "language: Spanish",
-        "color": "ededed",
-        "default": false
-      },
-      {
-        "id": 1133800881,
-        "node_id": "MDU6TGFiZWwxMTMzODAwODgx",
-        "url": "https://api.github.com/repos/freeCodeCamp-rocks/freeCodeCamp/labels/scope:%20curriculum",
-        "name": "scope: curriculum",
-        "color": "ededed",
-        "default": false
-      },
-      {
-        "id": 1122420656,
-        "node_id": "MDU6TGFiZWwxMTIyNDIwNjU2",
-        "url": "https://api.github.com/repos/freeCodeCamp-rocks/freeCodeCamp/labels/scope:%20guide",
-        "name": "scope: guide",
-        "color": "ededed",
-        "default": false
-      },
-      {
-        "id": 1133800883,
-        "node_id": "MDU6TGFiZWwxMTMzODAwODgz",
-        "url": "https://api.github.com/repos/freeCodeCamp-rocks/freeCodeCamp/labels/status:%20need%20to%20test%20locally",
-        "name": "status: need to test locally",
-        "color": "ededed",
-        "default": false
-      },
-      {
-        "id": 1122420657,
-        "node_id": "MDU6TGFiZWwxMTIyNDIwNjU3",
-        "url": "https://api.github.com/repos/freeCodeCamp-rocks/freeCodeCamp/labels/status:%20needs%20update",
-        "name": "status: needs update",
-        "color": "ededed",
-        "default": false
-      }
+
     ],
     "milestone": null,
-    "commits_url": "https://api.github.com/repos/freeCodeCamp-rocks/freeCodeCamp/pulls/6/commits",
-    "review_comments_url": "https://api.github.com/repos/freeCodeCamp-rocks/freeCodeCamp/pulls/6/comments",
+    "commits_url": "https://api.github.com/repos/freeCodeCamp-rocks/freeCodeCamp/pulls/9/commits",
+    "review_comments_url": "https://api.github.com/repos/freeCodeCamp-rocks/freeCodeCamp/pulls/9/comments",
     "review_comment_url": "https://api.github.com/repos/freeCodeCamp-rocks/freeCodeCamp/pulls/comments{/number}",
-    "comments_url": "https://api.github.com/repos/freeCodeCamp-rocks/freeCodeCamp/issues/6/comments",
-    "statuses_url": "https://api.github.com/repos/freeCodeCamp-rocks/freeCodeCamp/statuses/6a6ba2134c42165bd5d1571862ec229f7dda9f9d",
+    "comments_url": "https://api.github.com/repos/freeCodeCamp-rocks/freeCodeCamp/issues/9/comments",
+    "statuses_url": "https://api.github.com/repos/freeCodeCamp-rocks/freeCodeCamp/statuses/d2959c9931a965630a50b56ee68e1065bc4f4a9d",
     "head": {
-      "label": "freeCodeCamp-rocks:RandellDawson-patch-1",
-      "ref": "RandellDawson-patch-1",
-      "sha": "6a6ba2134c42165bd5d1571862ec229f7dda9f9d",
+      "label": "freeCodeCamp-rocks:RandellDawson-patch-2",
+      "ref": "RandellDawson-patch-2",
+      "sha": "d2959c9931a965630a50b56ee68e1065bc4f4a9d",
       "user": {
         "login": "freeCodeCamp-rocks",
         "id": 44328119,
@@ -234,7 +185,7 @@
     "base": {
       "label": "freeCodeCamp-rocks:master",
       "ref": "master",
-      "sha": "a421666a7210585cc96d6d09ea3de38f59e5c483",
+      "sha": "d202b893fd9feda5bc54f9bfceaf35217242e56a",
       "user": {
         "login": "freeCodeCamp-rocks",
         "id": 44328119,
@@ -357,31 +308,43 @@
     },
     "_links": {
       "self": {
-        "href": "https://api.github.com/repos/freeCodeCamp-rocks/freeCodeCamp/pulls/6"
+        "href": "https://api.github.com/repos/freeCodeCamp-rocks/freeCodeCamp/pulls/9"
       },
       "html": {
-        "href": "https://github.com/freeCodeCamp-rocks/freeCodeCamp/pull/6"
+        "href": "https://github.com/freeCodeCamp-rocks/freeCodeCamp/pull/9"
       },
       "issue": {
-        "href": "https://api.github.com/repos/freeCodeCamp-rocks/freeCodeCamp/issues/6"
+        "href": "https://api.github.com/repos/freeCodeCamp-rocks/freeCodeCamp/issues/9"
       },
       "comments": {
-        "href": "https://api.github.com/repos/freeCodeCamp-rocks/freeCodeCamp/issues/6/comments"
+        "href": "https://api.github.com/repos/freeCodeCamp-rocks/freeCodeCamp/issues/9/comments"
       },
       "review_comments": {
-        "href": "https://api.github.com/repos/freeCodeCamp-rocks/freeCodeCamp/pulls/6/comments"
+        "href": "https://api.github.com/repos/freeCodeCamp-rocks/freeCodeCamp/pulls/9/comments"
       },
       "review_comment": {
         "href": "https://api.github.com/repos/freeCodeCamp-rocks/freeCodeCamp/pulls/comments{/number}"
       },
       "commits": {
-        "href": "https://api.github.com/repos/freeCodeCamp-rocks/freeCodeCamp/pulls/6/commits"
+        "href": "https://api.github.com/repos/freeCodeCamp-rocks/freeCodeCamp/pulls/9/commits"
       },
       "statuses": {
-        "href": "https://api.github.com/repos/freeCodeCamp-rocks/freeCodeCamp/statuses/6a6ba2134c42165bd5d1571862ec229f7dda9f9d"
+        "href": "https://api.github.com/repos/freeCodeCamp-rocks/freeCodeCamp/statuses/d2959c9931a965630a50b56ee68e1065bc4f4a9d"
       }
     },
-    "author_association": "NONE"
+    "author_association": "MEMBER",
+    "merged": false,
+    "mergeable": null,
+    "rebaseable": null,
+    "mergeable_state": "unknown",
+    "merged_by": null,
+    "comments": 0,
+    "review_comments": 0,
+    "maintainer_can_modify": false,
+    "commits": 1,
+    "additions": 2,
+    "deletions": 0,
+    "changed_files": 1
   },
   "repository": {
     "id": 153991885,
@@ -451,7 +414,7 @@
     "deployments_url": "https://api.github.com/repos/freeCodeCamp-rocks/freeCodeCamp/deployments",
     "created_at": "2018-10-21T09:26:52Z",
     "updated_at": "2019-01-14T22:05:58Z",
-    "pushed_at": "2018-11-29T04:32:04Z",
+    "pushed_at": "2019-01-14T22:09:07Z",
     "git_url": "git://github.com/freeCodeCamp-rocks/freeCodeCamp.git",
     "ssh_url": "git@github.com:freeCodeCamp-rocks/freeCodeCamp.git",
     "clone_url": "https://github.com/freeCodeCamp-rocks/freeCodeCamp.git",

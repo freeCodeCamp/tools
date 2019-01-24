@@ -14,7 +14,9 @@
     "travis-ci": "^2.2.0",
     "util": "^0.11.1"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "nock": "^10.0.6"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
