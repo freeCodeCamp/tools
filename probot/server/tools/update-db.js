@@ -86,7 +86,7 @@ db.then(async () => {
       numPRs,
       prRange: `${firstPR}-${lastPR}`
     };
-    await INFO.updateOne(info)
+    await INFO.updateOne({}, info, { upsert: true })
       .catch(err => {
         console.log(err);
       });
