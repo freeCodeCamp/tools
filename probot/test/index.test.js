@@ -3,12 +3,15 @@ const expect = require('expect');
 const { Probot } = require('probot');
 // const fetch = require('node-fetch');
 const nock = require('nock');
+const { setupRecorder } = require('nock-record');
+const GitHubApi = require('@octokit/rest');
+
 const MockGH = require('./fixtures/github_mock');
 // const prOpenedFiles = require('./payloads/files/files.opened');
 // const prExistingFiles = require('./payloads/files/files.existing');
 // const prUnrelatedFiles = require('./payloads/files/files.unrelated');
-// const fs = require('fs');
-// const path = require('path');
+const fs = require('fs');
+const path = require('path');
 const prOpened = require('./fixtures/events/pullRequests.opened');
 const prClosed = require('./fixtures/events/pullRequests.closed');
 const prReopened = require('./fixtures/events/pullRequests.closed');
@@ -31,11 +34,17 @@ const PrInfo = require('../../lib/get-prs/index-probot.js');
 
 const { owner, repo } = config.github;
 // const prPropsToGet = ['number', 'user', 'title', 'updated_at'];
+const record = setupRecorder();
+const snapshotsExist = fs.readFileSync(
+  path.join(__dirname, '.', '__snapshots__', 'index.test.js.snap'));
+let snapshots;
+if (snapshotsExist) {
+  snapshots = require('./__snapshots__/index.test.js.snap');
+}
 
 describe('PrInfo API calls', async () => {
-  let methodProps, github, prInfo;
+  let methodProps, github, prInfo, key;
   beforeEach(async() => {
-    // github = await new GitHubApi();
     methodProps = {
       state: 'open',
       base: 'master',
@@ -47,12 +56,38 @@ describe('PrInfo API calls', async () => {
   });
   afterEach(async() => {
     nock.cleanAll();
-  });
+    // nock.enableNetConnect();
+    nock.enableNetConnect(/(api\.github\.com)/);
+    // nock.enableNetConnect(/(localhost|127\.0\.0\.1)/);
 
-  test('should get an accurate count of open PRs', async () => {
-    github = await new MockGH(
-            'should get an accurate count of open PRs')
-    .gh;
+  });
+  key = 'should get an accurate count of open PRs';
+  test.only(key, async () => {
+    // github = (
+    //   process.env.RECORD_ENV ? await new GitHubApi() :
+    //   await new MockGH(key)
+    // .gh);
+    let mockfunction = jest.fn(() => {
+      Promise.resolve({
+        data: {
+          total_count: snapshots[key]
+        }
+      });
+    });
+    github = await jest.mock('@octokit/rest', () => () => 
+    ({
+      name: 'gh_issuesAndPullRequest',
+      search: {
+          issuesAndPullRequests: jest.fn(() => {
+            Promise.resolve({
+              data: {
+                total_count: snapshots[key]
+              }
+            });
+          })
+        }
+    }));
+    console.log(github);
     prInfo = await new PrInfo(github, owner, repo);
     methodProps.q = `repo:${owner}/${repo}+is:open+type:pr+base:master`;
     // eslint-disable-next-line camelcase
@@ -63,53 +98,68 @@ describe('PrInfo API calls', async () => {
     delete methodProps.owner;
     delete methodProps.repo;
     delete methodProps.state;
+    nock.enableNetConnect(/(api\.github\.com)/);
+    // nock.enableNetConnect(/(localhost|127\.0\.0\.1)/);
+    const { completeRecording } = await record('prInfo_getCount');
     const count = await prInfo.getCount();
+    completeRecording();
+    console.log(count)
+    expect(count).toMatchSnapshot();
     expect(github.search.issuesAndPullRequests)
     .toHaveBeenCalledWith(methodProps);
-    expect(count).toMatchSnapshot();
   });
 
   test(`should get an Array with two Numbers that represent the range
   of open PRs`, async() => {
-    github = await new MockGH(
+    github = (process.env.RECORD_ENV ? github :
+      await new MockGH(
             `should get an Array with two Numbers that represent the range
     of open PRs`)
-    .gh;
-
+    .gh);
+console.log(process.env.RECORD_ENV)
     prInfo = await new PrInfo(github, owner, repo);
     // eslint-disable-next-line camelcase
     methodProps.per_page = 1;
     methodProps.direction = 'desc';
+    nock.enableNetConnect();
+    const { completeRecording } = await record('prInfo_getRange');
     const range = await prInfo.getRange();
-    expect(github.pullRequests.list).toHaveBeenCalledWith(methodProps);
+    completeRecording();
     expect(range).toMatchSnapshot();
+    expect(github.pullRequests.list).toHaveBeenCalledWith(methodProps);
   });
 
   test('should get the Number of first PR', async () => {
-    github = await new MockGH(
+    github = (process.env.RECORD_ENV ? github :
+      await new MockGH(
             'should get the Number of first PR')
-    .gh;
+    .gh);
     prInfo = await new PrInfo(github, owner, repo);
     // eslint-disable-next-line camelcase
     methodProps.per_page = 1;
     methodProps.direction = 'asc';
+    const { completeRecording } = await record('prInfo_getFirstPRNumber');
     const first = await prInfo.getFirst();
-    expect(github.pullRequests.list).toHaveBeenCalledWith(methodProps);
+    completeRecording();
     expect(first).toMatchSnapshot();
+    expect(github.pullRequests.list).toHaveBeenCalledWith(methodProps);
   });
 
   test('should get an Array of PRs by count and range', async() => {
-    github = await new MockGH(
+    github = (process.env.RECORD_ENV ? github :
+      await new MockGH(
             'should get an Array of PRs by count and range')
-      .gh;
+      .gh);
     prInfo = await new PrInfo(github, owner, repo);
     methodProps.direction = 'desc';
     // eslint-disable-next-line camelcase
     methodProps.per_page = 1;
     const keys = Object.keys(prOpened.pull_request);
+    const { completeRecording } = await record('prInfo_getSpecificRange');
     const specificRange = await prInfo.getPRs(2, 3, 7, keys);
-    expect(github.pullRequests.list).toHaveBeenCalledWith(methodProps);
+    completeRecording();
     expect(specificRange).toMatchSnapshot();
+    expect(github.pullRequests.list).toHaveBeenCalledWith(methodProps);
   });
 });
 

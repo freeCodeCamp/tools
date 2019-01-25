@@ -4,13 +4,30 @@ const prExistingFiles = require('./files/files.existing');
 const prUnrelatedFiles = require('./files/files.unrelated');
 const path = require('path');
 const fs = require('fs');
+
+const snapshotsExist = fs.readFileSync(
+  path.join(__dirname, '..', '__snapshots__', 'index.test.js.snap'));
+let snapshots;
+if (snapshotsExist) {
+  snapshots = require('../__snapshots__/index.test.js.snap');
+}
 /* eslint-disable camelcase */
 /* eslint-disable no-undef */
-
+// const Mock = jest.mock('@octokit/rest', () => () => ({
+//   name: 'GitHubApi',
+//   search: {
+//       issuesAndPullRequests: jest.fn(() => {
+//         Promise.resolve({
+//           data: {
+//             total_count: snapshots[key]
+//           }
+//         });
+//       })
+//     }
+// }))
 class Mock {
   constructor(key) {
     this.key = key;
-    this.recordedSnaps =
     this.gh = {
       hasNextPage: jest.fn(Promise.resolve('deprecated')),
       activity: {},
@@ -340,13 +357,13 @@ class Mock {
       search: {
           code: jest.fn(),
           commits: jest.fn(),
-          issuesAndPullRequests: jest.fn(
-            () => Promise.resolve(
-              {data: {
-                total_count: fs.readFileSync(
-                  path.join(__dirname, '..', '__snapshots__', 'index.test.js.snap')
-                )[key]
-              }})),
+          issuesAndPullRequests: jest.fn(() => {
+            Promise.resolve({
+              data: {
+                total_count: snapshots[key]
+              }
+            });
+          }),
           labels: jest.fn(),
           repos: jest.fn(),
           topics: jest.fn(),
@@ -356,6 +373,6 @@ class Mock {
     };
   }
 }
-module.exports = Mock;
+// module.exports = Mock;
 /* eslint-enable camelcase */
 /* eslint-enable no-undef */
