@@ -28,7 +28,7 @@ body {
 
 .app-menu {
   margin: 0;
-  padding: 15px;
+  padding: 13px 15px;
   margin-right: 15px;
 
   display: flex;
@@ -38,7 +38,7 @@ body {
 }
 
 .app-menu li a {
-  padding: 15px;
+  padding: 13px 15px;
   color: white;
   font-size: 20px;
   font-weight: 700;
