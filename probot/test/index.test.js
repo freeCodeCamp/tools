@@ -253,16 +253,13 @@ describe('UpdateDB MongoDB methods', async() => {
   });
 
   beforeEach( async() => {
-    nockBack.setMode('record');
     probot = new Probot({});
     app = await probot.load(probotPlugin);
   });
 
   key = 'db should update if the action is opened';
   test(key, async () => {
-    github = (recording ? await new GitHubApi(octokitConfig) :
-      await new MockGH(key).gh
-    );
+    github = await new MockGH(key).gh;
     app.auth = () => github;
     await probot.receive({
       name: 'pull_request',
@@ -276,9 +273,7 @@ describe('UpdateDB MongoDB methods', async() => {
 
   key = 'db should update if the action is reopened';
   test(key, async () => {
-    github = (recording ? await new GitHubApi(octokitConfig) :
-      await new MockGH(key).gh
-    );
+    github = await new MockGH(key).gh;
     app.auth = () => Promise.resolve(github);
     await probot.receive({
       name: 'pull_request',
@@ -292,9 +287,7 @@ describe('UpdateDB MongoDB methods', async() => {
 
   key = 'db should have removed document if action is closed';
   test(key, async () => {
-    github = (recording ? await new GitHubApi(octokitConfig) :
-      await new MockGH(key).gh
-    );
+    github = await new MockGH(key).gh;
     app.auth = () => Promise.resolve(github);
     await probot.receive({
       name: 'pull_request',

@@ -118,16 +118,19 @@ class Mock {
           getCommentsForRepo: jest.fn(),
           getCommentsForReview: jest.fn(),
           getCommits: jest.fn(),
-          getFiles: jest.fn(() => ({ data: mockSnapshots[key] })),
+          getFiles: jest.fn(() => (
+            { data: (mockSnapshotsExist ? mockSnapshots[key] : []) })),
           getReview: jest.fn(),
           getReviewComments: jest.fn(),
           getReviewRequests: jest.fn(),
           getReviews: jest.fn(),
-          list: jest.fn(() => ({ data: mockSnapshots[key] })),
+          list: jest.fn(() => (
+            { data: (mockSnapshotsExist ? mockSnapshots[key] : []) })),
           listComments: jest.fn(),
           listCommentsForRepo: jest.fn(),
           listCommits: jest.fn(),
-          listFiles: jest.fn(() => ({ data: mockSnapshots[key] })),
+          listFiles: jest.fn(() => (
+            { data: (mockSnapshotsExist ? mockSnapshots[key] : []) })),
           listReviewRequests: jest.fn(),
           listReviews: jest.fn(),
           merge: jest.fn(),
@@ -325,7 +328,7 @@ class Mock {
           issuesAndPullRequests: jest.fn(() => {
             Promise.resolve({
               data: {
-                total_count: mockSnapshots[key]
+                total_count: (mockSnapshotsExist ? mockSnapshots[key] : [])
               }
             });
           }),
