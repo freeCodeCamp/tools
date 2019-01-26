@@ -1,7 +1,3 @@
-const prExisting = require('./events/pullRequests.existing');
-const prOpenedFiles = require('./files/files.opened');
-const prExistingFiles = require('./files/files.existing');
-const prUnrelatedFiles = require('./files/files.unrelated');
 const path = require('path');
 const fs = require('fs');
 
@@ -13,18 +9,6 @@ if (mockSnapshotsExist) {
 }
 /* eslint-disable camelcase */
 /* eslint-disable no-undef */
-// const Mock = jest.mock('@octokit/rest', () => () => ({
-//   name: 'GitHubApi',
-//   search: {
-//       issuesAndPullRequests: jest.fn(() => {
-//         Promise.resolve({
-//           data: {
-//             total_count: mockSnapshots[key]
-//           }
-//         });
-//       })
-//     }
-// }))
 class Mock {
   constructor(key) {
     this.key = key;
@@ -134,7 +118,7 @@ class Mock {
           getCommentsForRepo: jest.fn(),
           getCommentsForReview: jest.fn(),
           getCommits: jest.fn(),
-          getFiles: jest.fn(),
+          getFiles: jest.fn(() => ({ data: mockSnapshots[key] })),
           getReview: jest.fn(),
           getReviewComments: jest.fn(),
           getReviewRequests: jest.fn(),
@@ -143,24 +127,7 @@ class Mock {
           listComments: jest.fn(),
           listCommentsForRepo: jest.fn(),
           listCommits: jest.fn(),
-          listFiles: jest.fn((issue) => {
-              const { number } = issue;
-              let data;
-              switch (number) {
-                case 9:
-                  data = prOpenedFiles;
-                  break;
-                case 6:
-                  data = prExistingFiles;
-                  break;
-                case 4:
-                  data = prUnrelatedFiles;
-                  break;
-                default:
-                  data = prExistingFiles;
-              }
-              return { data };
-            }),
+          listFiles: jest.fn(() => ({ data: mockSnapshots[key] })),
           listReviewRequests: jest.fn(),
           listReviews: jest.fn(),
           merge: jest.fn(),

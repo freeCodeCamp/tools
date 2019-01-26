@@ -1,20 +1,16 @@
-const config = require('../../config');
 const expect = require('expect');
 const { Probot } = require('probot');
-// const fetch = require('node-fetch');
-const fs = require('fs');
 const path = require('path');
 const nock = require('nock');
+
 const nockBack = nock.back;
 nockBack.fixtures = path.join(__dirname, '.', '__nock-fixtures__');
-const { owner, repo, octokitConfig, octokitAuth } = require('../../lib/constants');
+const { owner, repo, octokitConfig } = require('../../lib/constants');
 
-const GitHubApi = require('@octokit/rest')//(octokitConfig);
+const GitHubApi = require('@octokit/rest');
 
 const MockGH = require('./fixtures/github_mock');
-// const prOpenedFiles = require('./payloads/files/files.opened');
-// const prExistingFiles = require('./payloads/files/files.existing');
-// const prUnrelatedFiles = require('./payloads/files/files.unrelated');
+const prExisting = require('./fixtures/events/pullRequests.existing');
 const prOpened = require('./fixtures/events/pullRequests.opened');
 const prClosed = require('./fixtures/events/pullRequests.closed');
 const prReopened = require('./fixtures/events/pullRequests.closed');
@@ -23,6 +19,7 @@ const { PRtest } = require('./utils/testmodels');
 
 const PrInfo = require('../../lib/get-prs/index-probot.js');
 const Presolver = require('../server/presolver.js');
+
 const recording = process.env.RECORD_ENV;
 
 // It's unclear whether we need to disconnect mongoose because there
@@ -33,17 +30,17 @@ const recording = process.env.RECORD_ENV;
 // const mongoose = require('mongoose');
 
 const prPropsToGet = ['number', 'user', 'title', 'updated_at'];
-const mockSnapshotsExist = fs.existsSync(
-  path.join(__dirname, '.', '__snapshots__', 'index.test.js.snap'));
-let mockSnapshots, mockGithub;
-if (mockSnapshotsExist) {
-  mockSnapshots = require('./__snapshots__/index.test.js.snap');
-}
+// const mockSnapshotsExist = fs.existsSync(
+//   path.join(__dirname, '.', '__snapshots__', 'index.test.js.snap'));
+// let mockSnapshots, mockGithub;
+// if (mockSnapshotsExist) {
+//   mockSnapshots = require('./__snapshots__/index.test.js.snap');
+// }
 
 nockBack.setMode('record');
 
 describe('PrInfo API calls', async () => {
-  let methodProps, github, prInfo, key, record;
+  let methodProps, github, prInfo, key;
   beforeEach(async() => {
     nockBack.setMode('record');
     methodProps = {
@@ -61,7 +58,7 @@ describe('PrInfo API calls', async () => {
     nockBack.setMode('wild');
     nock.cleanAll();
   });
-  
+
   key = 'should get all PRs';
   test(key, async() => {
     const { nockDone } = await nockBack(
@@ -74,13 +71,17 @@ describe('PrInfo API calls', async () => {
 
     nock.enableNetConnect(/(api\.github\.com)/);
     prInfo = await new PrInfo(github, owner, repo);
+    // eslint-disable-next-line camelcase
     methodProps.per_page = 100;
     const all = await prInfo.getPRs('all', null, null, prPropsToGet);
     expect(all).toMatchSnapshot();
     nockDone();
-    if (!recording) expect(github.pullRequests.list).toHaveBeenCalledWith(methodProps);
+    if (!recording) {
+      expect(github.pullRequests.list)
+      .toHaveBeenCalledWith(methodProps);
+    }
   }, 5000);
-  
+
   key = 'should get an accurate count of open PRs';
   test(key, async () => {
     const { nockDone } = await nockBack(
@@ -104,8 +105,10 @@ describe('PrInfo API calls', async () => {
     const count = await prInfo.getCount();
     expect(count).toMatchSnapshot();
     nockDone();
-    if (!recording) expect(github.search.issuesAndPullRequests)
+    if (!recording) {
+      expect(github.search.issuesAndPullRequests)
       .toHaveBeenCalledWith(methodProps);
+    }
   });
 
   key = `should get an Array with two Numbers that represent the range
@@ -120,12 +123,13 @@ describe('PrInfo API calls', async () => {
     nock.enableNetConnect(/(api\.github\.com)/);
     prInfo = await new PrInfo(github, owner, repo);
     // eslint-disable-next-line camelcase
-    methodProps.per_page = 1;
     methodProps.direction = 'desc';
     const range = await prInfo.getRange();
     expect(range).toMatchSnapshot();
     nockDone();
-    if (!recording) expect(github.pullRequests.list).toHaveBeenCalledWith(methodProps);
+    if (!recording) {
+      expect(github.pullRequests.list).toHaveBeenCalledWith(methodProps);
+    }
   });
 
   key = 'should get the Number of first PR';
@@ -144,7 +148,9 @@ describe('PrInfo API calls', async () => {
     const first = await prInfo.getFirst();
     expect(first).toMatchSnapshot();
     nockDone();
-    if (!recording) expect(github.pullRequests.list).toHaveBeenCalledWith(methodProps);
+    if (!recording) {
+      expect(github.pullRequests.list).toHaveBeenCalledWith(methodProps);
+    }
   });
 
   key = 'should get an Array of PRs by count and range';
@@ -163,13 +169,15 @@ describe('PrInfo API calls', async () => {
     const specificRange = await prInfo.getPRs(2, 3, 7, prPropsToGet);
     expect(specificRange).toMatchSnapshot();
     nockDone();
-    if (!recording) expect(github.pullRequests.list).toHaveBeenCalledWith(methodProps);
+    if (!recording) {
+      expect(github.pullRequests.list).toHaveBeenCalledWith(methodProps);
+    }
   });
 
-  key = 'should get an Array of filenames for a given PR';
+  key = 'should get an Array of files for a given PR';
   test(key, async() => {
     const { nockDone } = await nockBack(
-      'prInfo.getFileNames.json'
+      'prInfo.getFiles.json'
     );
     github = (recording ? await new GitHubApi(octokitConfig) :
       await new MockGH(key).gh
@@ -177,16 +185,21 @@ describe('PrInfo API calls', async () => {
     nock.enableNetConnect(/(api\.github\.com)/);
     prInfo = await new PrInfo(github, owner, repo);
     methodProps.number = prExisting.number;
-    const fileNames = await prInfo.getFileNames(methodProps.number);
-    expect(fileNames).toMatchSnapshot();
+    const files = await prInfo.getFiles(methodProps.number);
+    expect(files).toMatchSnapshot();
     nockDone();
-    if (!recording) expect(github.pullRequests.lisFiles)
-      .toHaveBeenCalledWith(methodProps)
+    if (!recording) {
+      expect(github.pullRequests.listFiles)
+        .toHaveBeenCalledWith(methodProps);
+    }
   });
 });
 
 describe('PrInfo accessed via the probot', () => {
-  let methodProps, probot, app, instance, key, presolver, context, prInfo, github;
+  let methodProps, probot,
+    // eslint-disable-next-line no-unused-vars
+    app,
+    key, presolver, context, prInfo, github;
   afterEach(async() => {
     nockBack.setMode('wild');
     nock.cleanAll();
@@ -225,7 +238,7 @@ describe('PrInfo accessed via the probot', () => {
       nock.enableNetConnect(/(api\.github\.com)/);
       presolver = await new Presolver(context, { owner, repo });
       prInfo = await presolver.prInfo;
-      const count = await prInfo.getCount();//.getContext(JSON.parse(JSON.stringify(getMockContext)));
+      const count = await prInfo.getCount();
       expect(count).toMatchSnapshot();
       nockDone();
     }
@@ -241,36 +254,40 @@ describe('UpdateDB MongoDB methods', async() => {
   beforeEach( async() => {
     probot = new Probot({});
     app = await probot.load(probotPlugin);
-    app.auth = () => Promise.resolve(github);
   });
 
-  key = 'db should update if the action is opened'
+  key = 'db should update if the action is opened';
   test(key, async () => {
     github = await new MockGH(key).gh;
+    app.auth = () => github;
     await probot.receive({
       name: 'pull_request',
       payload: prOpened
     });
     const results = await PRtest.find({}).then(data => data);
-    expect(results).toMatchSnapshot();//.toBeGreaterThan(0);
+    expect(results).toMatchSnapshot();
+      // .toBeGreaterThan(0);
     expect(github.pullRequests.listFiles).toHaveBeenCalled();
   });
 
   key = 'db should update if the action is reopened';
   test(key, async () => {
     github = await new MockGH(key).gh;
+    app.auth = () => Promise.resolve(github);
     await probot.receive({
       name: 'pull_request',
       payload: prReopened
     });
     const results = await PRtest.find({}).then(data => data);
-    expect(results).toMatchSnapshot();//.toBeGreaterThan(0);
+    expect(results).toMatchSnapshot();
+      // .toBeGreaterThan(0);
     expect(github.pullRequests.listFiles).toHaveBeenCalled();
   });
 
   key = 'db should have removed document if action is closed';
   test(key, async () => {
     github = await new MockGH(key).gh;
+    app.auth = () => Promise.resolve(github);
     await probot.receive({
       name: 'pull_request',
       payload: prClosed
@@ -278,7 +295,8 @@ describe('UpdateDB MongoDB methods', async() => {
     const result = await PRtest.findOne(
       { _id: prClosed.number }).then(doc => doc)
       .catch(err => console.log(err));
-    expect(result).toMatchSnapshot();//.toBe(null);
+    expect(result).toBe(null);
+      // .toMatchSnapshot();
   });
 });
 

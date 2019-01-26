@@ -1,5 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`PrInfo API calls should get the Number of first PR 1`] = `2`;
-
-exports[`PrInfo accessed via the probot should get an accurate count of open PRs 1`] = `2`;

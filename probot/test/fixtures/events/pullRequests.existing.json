@@ -1,6 +1,6 @@
 {
   "action": "opened",
-  "number": 9,
+  "number": 6,
   "pull_request": {
     "url": "https://api.github.com/repos/freeCodeCamp-rocks/freeCodeCamp/pulls/6",
     "id": 232204579,
