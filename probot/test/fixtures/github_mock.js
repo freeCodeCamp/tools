@@ -5,11 +5,11 @@ const prUnrelatedFiles = require('./files/files.unrelated');
 const path = require('path');
 const fs = require('fs');
 
-const snapshotsExist = fs.readFileSync(
+const mockSnapshotsExist = fs.existsSync(
   path.join(__dirname, '..', '__snapshots__', 'index.test.js.snap'));
-let snapshots;
-if (snapshotsExist) {
-  snapshots = require('../__snapshots__/index.test.js.snap');
+let mockSnapshots;
+if (mockSnapshotsExist) {
+  mockSnapshots = require('../__snapshots__/index.test.js.snap');
 }
 /* eslint-disable camelcase */
 /* eslint-disable no-undef */
@@ -19,7 +19,7 @@ if (snapshotsExist) {
 //       issuesAndPullRequests: jest.fn(() => {
 //         Promise.resolve({
 //           data: {
-//             total_count: snapshots[key]
+//             total_count: mockSnapshots[key]
 //           }
 //         });
 //       })
@@ -139,9 +139,7 @@ class Mock {
           getReviewComments: jest.fn(),
           getReviewRequests: jest.fn(),
           getReviews: jest.fn(),
-          list: jest.fn(() => ({ data: [
-                prExisting.pull_request
-              ] })),
+          list: jest.fn(() => ({ data: mockSnapshots[key] })),
           listComments: jest.fn(),
           listCommentsForRepo: jest.fn(),
           listCommits: jest.fn(),
@@ -149,13 +147,13 @@ class Mock {
               const { number } = issue;
               let data;
               switch (number) {
-                case 31525:
+                case 9:
                   data = prOpenedFiles;
                   break;
-                case 33363:
+                case 6:
                   data = prExistingFiles;
                   break;
-                case 34559:
+                case 4:
                   data = prUnrelatedFiles;
                   break;
                 default:
@@ -360,7 +358,7 @@ class Mock {
           issuesAndPullRequests: jest.fn(() => {
             Promise.resolve({
               data: {
-                total_count: snapshots[key]
+                total_count: mockSnapshots[key]
               }
             });
           }),
@@ -373,6 +371,6 @@ class Mock {
     };
   }
 }
-// module.exports = Mock;
+module.exports = Mock;
 /* eslint-enable camelcase */
 /* eslint-enable no-undef */

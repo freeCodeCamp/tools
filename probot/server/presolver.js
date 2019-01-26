@@ -35,8 +35,12 @@ class Presolver {
     this.methodProps.repo = this.config.repo;
     this.prInfo = new PrInfo(this.github, owner, repo);
   }
+  async getContext(pullRequest) {
+    return this.context;
+  }
 
   async presolve(pullRequest) {
+    console.log(this.context)
     Object.assign(this.pullRequest, pullRequest);
     await this._updateDb(this.context);
     // console.log(this.methodProps);

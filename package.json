@@ -20,6 +20,7 @@
     "develop:server": "cd ./probot/ && npm run develop"
   },
   "devDependencies": {
+    "cross-env": "^5.2.0",
     "dotenv": "^6.2.0",
     "eslint": "^5.9.0",
     "eslint-config-freecodecamp": "^1.1.1",

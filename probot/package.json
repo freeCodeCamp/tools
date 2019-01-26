@@ -15,9 +15,9 @@
     "start": "probot run esm ./index.js",
     "start-probot": "cross-env TEST_ENV=false probot run ./index.js",
     "lint": "standard --fix",
-    "test": "cross-env RECORD_ENV=false jest --forceExit --verbose --detectOpenHandles && standard",
-    "test-update": "cross-env RECORD_ENV=true jest --updateSnapshot --forceExit --detectOpenHandles",
-    "test:watch": "cross-env RECORD_ENV=false jest --watch --notify --notifyMode=change --coverage"
+    "test": "cross-env TEST_ENV=true RECORD_ENV=false jest --forceExit --verbose --detectOpenHandles && standard",
+    "test-update": "cross-env TEST_ENV=true RECORD_ENV=true jest --updateSnapshot --forceExit --detectOpenHandles",
+    "test:watch": "cross-env TEST_ENV=true RECORD_ENV=false jest --watch --notify --notifyMode=change --coverage"
   },
   "dependencies": {
     "cli-progress": "^2.1.1",
@@ -33,6 +33,7 @@
   "devDependencies": {
     "@octokit/rest": "^16.11.0",
     "expect": "^23.6.0",
+    "github-app": "^4.0.1",
     "jest": "^23.6.0",
     "nock": "^10.0.0",
     "nock-record": "^0.3.3",
