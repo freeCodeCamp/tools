@@ -11,13 +11,13 @@ async function probotPlugin(robot) {
     'pull_request.edited',
     'pull_request.synchronize',
     'pull_request.reopened',
-    'pull_request.labeled'
-    // 'pull_request.closed'
+    'pull_request.labeled',
+    'pull_request.closed'
   ];
   robot.on(events, presolve.bind(robot));
   // Using the 'pull_request.closed' event arbitrarily for now to test
   // the PrInfo module called via the probot.
-  robot.on(['pull_request.closed'], prinfo.bind(robot));
+  // robot.on(['pull_request.closed'], prinfo.bind(robot));
 
   const redirect = robot.route('/');
 
@@ -75,13 +75,6 @@ async function probotPlugin(robot) {
         console.log('MongoDB connection unsuccessful');
       });
   }
-}
-
-async function prinfo(context) {
-  const presolver = forRepository(context);
-  const prs = await presolver.prInfo;
-  const count = prs.getCount();
-  context.log(count);
 }
 
 async function presolve(context) {

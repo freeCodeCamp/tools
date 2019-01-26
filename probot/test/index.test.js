@@ -249,10 +249,12 @@ describe('UpdateDB MongoDB methods', async() => {
   let probot, app, key, github;
   afterEach(async () => {
     await PRtest.deleteMany({}).catch(err => console.log(err));
+    nock.cleanAll();
     nockBack.setMode('wild');
   });
 
   beforeEach( async() => {
+    await PRtest.deleteMany({}).catch(err => console.log(err));
     probot = new Probot({});
     app = await probot.load(probotPlugin);
   });
@@ -274,7 +276,7 @@ describe('UpdateDB MongoDB methods', async() => {
   key = 'db should update if the action is reopened';
   test(key, async () => {
     github = await new MockGH(key).gh;
-    app.auth = () => Promise.resolve(github);
+    app.auth = () => github;
     await probot.receive({
       name: 'pull_request',
       payload: prReopened
@@ -288,7 +290,7 @@ describe('UpdateDB MongoDB methods', async() => {
   key = 'db should have removed document if action is closed';
   test(key, async () => {
     github = await new MockGH(key).gh;
-    app.auth = () => Promise.resolve(github);
+    app.auth = () => github;
     await probot.receive({
       name: 'pull_request',
       payload: prClosed
