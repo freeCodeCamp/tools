@@ -107,6 +107,7 @@ work-logs
 # ------------
 
 *.pem
+*.vscode
 
 # ------------
 # Nock Files
