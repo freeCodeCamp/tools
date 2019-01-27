@@ -13,7 +13,7 @@ const MockGH = require('./fixtures/github_mock');
 const prExisting = require('./fixtures/events/pullRequests.existing');
 const prOpened = require('./fixtures/events/pullRequests.opened');
 const prClosed = require('./fixtures/events/pullRequests.closed');
-const prReopened = require('./fixtures/events/pullRequests.closed');
+const prReopened = require('./fixtures/events/pullRequests.reopened');
 const probotPlugin = require('..');
 const { PRtest } = require('./utils/testmodels');
 
@@ -36,11 +36,14 @@ const prPropsToGet = ['number', 'user', 'title', 'updated_at'];
 // if (mockSnapshotsExist) {
 //   mockSnapshots = require('./__snapshots__/index.test.js.snap');
 // }
-
 nockBack.setMode('record');
 
 describe('PrInfo API calls', async () => {
   let methodProps, github, prInfo, key;
+  // eslint-disable-next-line no-undef
+  beforeAll(async() => {
+    github = await new GitHubApi(octokitConfig);
+  });
   beforeEach(async() => {
     nockBack.setMode('record');
     methodProps = {
@@ -64,10 +67,7 @@ describe('PrInfo API calls', async () => {
     const { nockDone } = await nockBack(
       'prInfo.getAll.json'
     );
-    github = (
-      recording ? await new GitHubApi(octokitConfig) :
-      await new MockGH(key).gh
-    );
+    github = (!recording ? await new MockGH(key).gh : github);
 
     nock.enableNetConnect(/(api\.github\.com)/);
     prInfo = await new PrInfo(github, owner, repo);
@@ -87,10 +87,7 @@ describe('PrInfo API calls', async () => {
     const { nockDone } = await nockBack(
       'prInfo.getCount.json'
     );
-    github = (
-      recording ? await new GitHubApi(octokitConfig) :
-      await new MockGH(key).gh
-    );
+    github = (!recording ? await new MockGH(key).gh : github);
     nock.enableNetConnect(/(api\.github\.com)/);
     prInfo = await new PrInfo(github, owner, repo);
     methodProps.q = `repo:${owner}/${repo}+is:open+type:pr+base:master`;
@@ -117,9 +114,7 @@ describe('PrInfo API calls', async () => {
     const { nockDone } = await nockBack(
       'prInfo.getRange.json'
     );
-    github = (recording ? await new GitHubApi(octokitConfig) :
-      await new MockGH(key).gh
-    );
+    github = (!recording ? await new MockGH(key).gh : github);
     nock.enableNetConnect(/(api\.github\.com)/);
     prInfo = await new PrInfo(github, owner, repo);
     // eslint-disable-next-line camelcase
@@ -137,9 +132,7 @@ describe('PrInfo API calls', async () => {
     const { nockDone } = await nockBack(
       'prInfo.getFirstPRNumber.json'
     );
-    github = (recording ? await new GitHubApi(octokitConfig) :
-      await new MockGH(key).gh
-    );
+    github = (!recording ? await new MockGH(key).gh : github);
     nock.enableNetConnect(/(api\.github\.com)/);
     prInfo = await new PrInfo(github, owner, repo);
     // eslint-disable-next-line camelcase
@@ -158,9 +151,7 @@ describe('PrInfo API calls', async () => {
     const { nockDone } = await nockBack(
       'prInfo.getSpecificRange.json'
     );
-    github = (recording ? await new GitHubApi(octokitConfig) :
-      await new MockGH(key).gh
-    );
+    github = (!recording ? await new MockGH(key).gh : github);
     nock.enableNetConnect(/(api\.github\.com)/);
     prInfo = await new PrInfo(github, owner, repo);
     methodProps.direction = 'desc';
@@ -179,9 +170,7 @@ describe('PrInfo API calls', async () => {
     const { nockDone } = await nockBack(
       'prInfo.getFiles.json'
     );
-    github = (recording ? await new GitHubApi(octokitConfig) :
-      await new MockGH(key).gh
-    );
+    github = (!recording ? await new MockGH(key).gh : github);
     nock.enableNetConnect(/(api\.github\.com)/);
     prInfo = await new PrInfo(github, owner, repo);
     methodProps.number = prExisting.number;
@@ -200,6 +189,10 @@ describe('PrInfo accessed via the probot', () => {
     // eslint-disable-next-line no-unused-vars
     app,
     key, presolver, context, prInfo, github;
+  // eslint-disable-next-line no-undef
+  beforeAll(async() => {
+    github = await new GitHubApi(octokitConfig);
+  });
   afterEach(async() => {
     nockBack.setMode('wild');
     nock.cleanAll();
@@ -230,7 +223,6 @@ describe('PrInfo accessed via the probot', () => {
       expect(github.search.issuesAndPullRequests)
         .toHaveBeenCalledWith(methodProps);
     } else {
-      github = await new GitHubApi(octokitConfig);
       context = { github };
       const { nockDone } = await nockBack(
         'probot_prInfo.GetCount.json'
@@ -249,8 +241,8 @@ describe('UpdateDB MongoDB methods', async() => {
   let probot, app, key, github;
   afterEach(async () => {
     await PRtest.deleteMany({}).catch(err => console.log(err));
-    nock.cleanAll();
-    nockBack.setMode('wild');
+    await nockBack.setMode('wild');
+    await nock.cleanAll();
   });
 
   beforeEach( async() => {
@@ -268,7 +260,7 @@ describe('UpdateDB MongoDB methods', async() => {
       payload: prOpened
     });
     const results = await PRtest.find({}).then(data => data);
-    expect(results).toMatchSnapshot();
+    await expect(results).toMatchSnapshot();
       // .toBeGreaterThan(0);
     expect(github.pullRequests.listFiles).toHaveBeenCalled();
   });
@@ -282,7 +274,7 @@ describe('UpdateDB MongoDB methods', async() => {
       payload: prReopened
     });
     const results = await PRtest.find({}).then(data => data);
-    expect(results).toMatchSnapshot();
+    await expect(results).toMatchSnapshot();
       // .toBeGreaterThan(0);
     expect(github.pullRequests.listFiles).toHaveBeenCalled();
   });
