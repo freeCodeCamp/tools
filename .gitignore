@@ -108,3 +108,11 @@ work-logs
 
 *.pem
 *.vscode
+
+# ------------
+# Nock Files
+# ------------
+
+# ignoring fixtures for now
+__nock-fixtures__/
+__snapshots__/

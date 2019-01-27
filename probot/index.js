@@ -1,7 +1,7 @@
-const debug = require('debug')('probot:presolver');
-const Presolver = require('./server/presolver');
+// const debug = require('debug')('probot:presolver');
 const config = require('../config');
 // config should be imported before importing any other file
+const Presolver = require('./server/presolver');
 const mongoose = require('mongoose');
 const path = require('path');
 
@@ -14,16 +14,17 @@ async function probotPlugin(robot) {
     'pull_request.labeled',
     'pull_request.closed'
   ];
+  robot.on(events, presolve.bind(robot));
+  // Using the 'pull_request.closed' event arbitrarily for now to test
+  // the PrInfo module called via the probot.
+  // robot.on(['pull_request.closed'], prinfo.bind(robot));
 
-  robot.on(events, presolve.bind(null, robot));
-
-  // const prOpened = require('./test/payloads/events/pullRequests.opened');
-  // robot.receive({
-  //   name: 'pull_request.opened',
-  //   payload: prOpened
-  // });
   const redirect = robot.route('/');
-  redirect.get('/', (req, res) => res.redirect('/home'));
+
+  // Note that probot uses this method for logging:
+  // robot.log , context.log , req.log
+  // robot.log(robot.router);
+  redirect.get('/', async(req, res) => res.redirect('/home'));
   const landingPage = robot.route('/home');
   landingPage.use(require('express').static('public'));
   const app = robot.route('/dashboard');
@@ -39,6 +40,8 @@ async function probotPlugin(robot) {
       'Origin, X-Requested-With, Content-Type, Accept'
     );
     response.header('Access-Control-Allow-Methods', 'GET');
+    response.header(
+      'Accept', 'application/vnd.github.machine-man-preview+json');
     next();
   });
 
@@ -74,14 +77,14 @@ async function probotPlugin(robot) {
   }
 }
 
-async function presolve(app, context) {
+async function presolve(context) {
   const presolver = forRepository(context);
   const pullRequest = getPullRequest(context);
   return presolver.presolve(pullRequest);
 }
 
 function forRepository(context) {
-  const config = { ...context.repo({ logger: debug }) };
+  const config = { ...context.repo() };
   return new Presolver(context, config);
 }
 
