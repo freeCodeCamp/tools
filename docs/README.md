@@ -54,7 +54,6 @@ npm run develop
 node probot/server/tools/update-db.js
 ```
 - This will take a while. If it stops running partway through, it's probably a timeout error. Run the command again and it should finish
-- After this is complete you will need to re-run `npm run develop` to update the program with the new info from the DB
 
 ## Caveats & Notes
 
