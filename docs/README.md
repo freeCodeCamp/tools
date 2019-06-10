@@ -9,7 +9,7 @@ cp probot/sample.env probot/.env
 - If you do not want to populate the database with the freeCodeCamp PR's you can [skip to step 6](#6-start-the-program)
 
 ### 2. Update .env
-- Put your GitHub username in the `username` field of the `.env` file
+- Put your GitHub username in the `GITHUB_USERNAME` field of the `.env` file
 
 ### 3. Obtain GitHub Personal access token
 - While on Github, click your profile icon > `Settings`
