@@ -9,23 +9,23 @@ cp probot/sample.env probot/.env
 - If you do not want to populate the database with the freeCodeCamp PR's you can [skip to step 6](#6-start-the-program)
 
 ### 2. Update .env
-- Put your GitHub username in the `username` field of `.env` file
+- Put your GitHub username in the `username` field of the `.env` file
 
 ### 3. Obtain GitHub Personal access token
 - While on Github, click your profile icon > `Settings`
 - Then click `Developer settings` > `Personal access tokens`
 - Click `Generate new token`
 - On the next page, give the token a name so you know what it’s for
-- scroll down to the bottom and click `Generate token`
+- Scroll down to the bottom and click `Generate token`
 - Copy the token string and paste it into the `GITHUB_ACCESS_TOKEN` field in the `.env` file. Note that you will not be able to see this token string on GitHub again
 
 ### 4. Create your own GitHub app
 - While on GitHub, click your profile icon > `Settings`
 - Then click `developer settings` > `New GitHub app`
-- Fill in the name field with a name of your choice
+- Fill in the `name` field with a name of your choice
 - Fill in the `Homepage URL` field with `https://localhost`
 - In a new tab, go to https://smee.io/
-- Click `start a new Channel` and copy the URL they give you. You can ignore the rest of the instructions on this page
+- Click `Start a new channel` and copy the URL they give you. You can ignore the rest of the instructions on this page
 - Paste the URL you copied into the `WEBHOOK_PROXY_URL` field of the `.env` file and the `Webhook URL` field of your new GitHub app 
 - Fill in the `Webhook secret` field on the GitHub app with a secret of your choice
 - Put the same secret you just used in the `WEBHOOK_SECRET` field of the `.env` file
@@ -41,7 +41,7 @@ mongod —dbpath=./database_folder
 ```
 
 ### 6. Start the program
-- In a new terminal window, run these three commands to start the program. Wait for one command to finish running before starting the next.
+- In a new terminal window or tab, run these three commands to start the program. Wait for one command to finish running before starting the next.
 ```bash
 npm install
 npm run build
