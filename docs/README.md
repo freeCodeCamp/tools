@@ -23,6 +23,7 @@ cp probot/sample.env probot/.env
 - While on GitHub, click your profile icon > `Settings`
 - Then click `developer settings` > `New GitHub app`
 - Fill in the `name` field with a name of your choice
+- Fill in the `Homepage URL` field with the URL to the GitHub repository for your app. e.g. `https://github.com/username/contribute`
 - In a new tab, go to https://smee.io/
 - Click `Start a new channel` and copy the URL they give you. You can ignore the rest of the instructions on the `smee.io` page
 - Paste the URL you copied into the `WEBHOOK_PROXY_URL` field of the `.env` file and the `Webhook URL` field of your new GitHub app 
