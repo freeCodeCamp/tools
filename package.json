@@ -7,29 +7,41 @@
   "scripts": {
     "bootstrap": "lerna bootstrap --ci",
     "build": "lerna run build",
+    "clean": "npm-run-all clean:all-deps",
+    "clean:all-deps": "lerna clean && shx rm -rf node_modules",
     "postinstall": "npm run bootstrap",
     "test": "run-p test:*",
     "test:probot": "cd ./probot && npm run test",
     "test:client": "cd ./probot/client && npm run test",
     "format": "prettier --write es5 ./**/*.{js,json} && npm run lint",
-    "lint": "eslint ./**/*.js --fix",
+    "lint": "eslint . --fix",
     "start": "cd probot && npm start && cd ../",
     "develop": "run-p develop:*",
     "develop:client": "cd ./probot/client && npm run develop",
     "develop:server": "cd ./probot/ && npm run develop"
   },
   "devDependencies": {
+    "@freecodecamp/eslint-config": "^2.0.2",
+    "babel-eslint": "^10.0.2",
     "dotenv": "^6.2.0",
     "eslint": "^5.9.0",
-    "eslint-config-freecodecamp": "^1.1.1",
+    "eslint-config-prettier": "^5.0.0",
+    "eslint-plugin-import": "^2.17.3",
+    "eslint-plugin-prefer-object-spread": "^1.2.1",
+    "eslint-plugin-prettier": "^3.1.0",
+    "eslint-plugin-react": "^7.13.0",
     "esm": "^3.0.84",
+    "husky": "^2.4.1",
     "joi": "^14.3.1",
     "lerna": "^3.5.1",
+    "lint-staged": "^8.2.1",
     "mocha": "^5.2.0",
     "nodemon": "^1.18.9",
     "npm-run-all": "^4.1.5",
     "presolver": "file:probot",
-    "prettier": "^1.15.2"
+    "prettier": "^1.18.2",
+    "shx": "^0.3.2",
+    "typescript": "^3.5.2"
   },
   "nodemonConfig": {
     "exec": "npm start",
@@ -46,5 +58,16 @@
   "dependencies": {
     "ajv": "^6.6.1",
     "ajv-keywords": "^3.2.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint --fix",
+      "git add"
+    ]
   }
 }
