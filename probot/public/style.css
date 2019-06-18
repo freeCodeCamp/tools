@@ -4,8 +4,83 @@
   }
 }
 
-.return-to-free-code-camp {
-    padding: 0!important;
-    margin: -9px 0!important;
-    height: 50px!important;
+.nav-item {
+  flex: 1;
+  margin: 0;
+  padding: 0;
+}
+
+.app-menu {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  list-style: none;
+}
+
+.app-menu li a {
+  padding: 13px 15px;
+  color: white;
+  font-size: 20px;
+  font-weight: 700;
+  display: block;
+  line-height: normal;
+}
+
+.app-menu li a:hover {
+  color: #006400;
+  background: #eee;
+  text-decoration: none;
+}
+
+a {
+  text-decoration: none;
+  color: #006400;
+}
+
+img.logo {
+  display: block;
+  max-width: 100%;
+  padding-top: 5px;
+  padding-left: 30px;
+  height: 38px;
+}
+
+#top-nav {
+  margin: 0;
+  padding: 0 30px 0 0;
+  color: white;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  display:flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #006400;
+  z-index: 1;
+}
+
+@media (max-width: 991px) {
+   #top-nav {
+    flex-direction: column;
+    padding: 0;
+   }
+   .app-menu {
+     flex-direction: column;
+     padding: 0;
+     margin-right: 0;
+   }
+   .app-menu li a {
+     padding: 5px;
+   }
+   img.logo {
+     padding-left: 5px;
+     padding-right: 5px;
+   }
+}
+
+ul > li {
+  list-style-type: none;
+  white-space: normal;
+  padding: 0;
 }
