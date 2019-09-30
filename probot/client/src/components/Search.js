@@ -42,6 +42,7 @@ class Search extends Component {
     const { searchValue } = this.state;
     if (searchValue) {
       this.searchPRs(searchValue);
+      this.setState(prevState => ({searchValue: '', results: [] }));
     } else {
       this.inputRef.current.focus();
     }
@@ -66,7 +67,7 @@ class Search extends Component {
       .then(response => response.json())
       .then(({ ok, message, results }) => {
         if (ok) {
-          this.setState(prevState => ({ message, results }));
+          this.setState(prevState => ({ searchValue: '',message, results }));
         }
       })
       .catch(() => {
