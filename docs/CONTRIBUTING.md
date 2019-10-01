@@ -1,8 +1,8 @@
 # Contributing
 
-Todo
+To do
 
 ## Usage
 
-Todo
+To do
 
