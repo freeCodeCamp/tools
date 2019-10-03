@@ -87,6 +87,7 @@ typings/
 /node_modules
 /.pnp
 .pnp.js
+hi
 
 # testing
 /coverage
