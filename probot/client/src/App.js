@@ -33,7 +33,7 @@ const Container = styled.div`
 
 const AppNavBar = styled.nav`
   margin: 0;
-  padding: 0;
+  padding-right: 30px;
   color: white;
   position: fixed;
   top: 0;
@@ -44,13 +44,31 @@ const AppNavBar = styled.nav`
   align-items: center;
   background: ${({ theme }) => theme.primary};
   @media (max-width: 991px) {
-    flex-direction: column;  
+    flex-direction: column;
+    padding: 5px;
   }
 `;
 
-const imgStyle = { paddingLeft: '30px' };
+const LogoImg = styled.img`
+  display: block;
+  max-width: 100%;
+  padding-top: 5px;
+  padding-left: 30px;
+  height: 38px;
+  @media (max-width: 991px) {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+`;
 
-const titleStyle = { margin: '0', padding: '0' };
+const NavTitle = styled.h1`
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  @media (max-width: 991px) {
+    padding: 0 0 10px 0;
+  }
+`;
 
 
 class App extends Component {
@@ -91,15 +109,14 @@ class App extends Component {
     return (
       <>
       <AppNavBar>
-        <a href="https://freecodecamp.org" target="_blank" rel="noopener noreferrer">
-          <img
-            style={imgStyle}
-            src="https://discourse-user-assets.s3.dualstack.us-east-1.amazonaws.com/original/3X/e/d/ed1c70bda321aaeee9e6c20ab650ce8bc34899fa.svg"
-            alt="Free Code Camp Logo"
-          />
-        </a>
-        <h1 style={titleStyle}>Contributor Tools</h1>
-        <ul className="app-menu">
+      <a className="nav-item" href="https://freecodecamp.org" target="_blank" rel="noopener noreferrer">
+        <LogoImg
+          src="https://s3.amazonaws.com/freecodecamp/freecodecamp_logo.svg"
+          alt="learn to code at freeCodeCamp logo"
+        />
+      </a>
+        <NavTitle className="nav-item">Contributor Tools</NavTitle>
+        <ul className="app-menu nav-item">
           <li>
             <a href="/">Home</a>
            </li>
@@ -107,9 +124,8 @@ class App extends Component {
              <a href="https://github.com/freeCodeCamp/freeCodeCamp" target="_blank" rel="noopener noreferrer">GitHub</a>
            </li>
         </ul>
-      </AppNavBar> 
+      </AppNavBar>
       <PageContainer>
-        
         <Tabs view={view} onViewChange={handleViewChange} />
         <Container>
           {view === 'search' && <Search />}

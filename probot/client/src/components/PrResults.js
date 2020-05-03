@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
+import { addBreaks } from '../utils';
 import ListItem from './ListItem';
 import FullWidthDiv from './FullWidthDiv';
 import Result from './Result';
@@ -16,7 +17,7 @@ const PrResults = ({ searchValue, results }) => {
       const fileOnMaster = `https://github.com/freeCodeCamp/freeCodeCamp/blob/master/${filename}`;
       return (
         <li key={`${number}-${index}`}>
-          {filename}{' '}
+          {addBreaks(filename)}{' '}
           <a href={fileOnMaster} rel="noopener noreferrer" target="_blank">
             (File on Master)
           </a>

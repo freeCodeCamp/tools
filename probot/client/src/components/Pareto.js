@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
+import { addBreaks } from '../utils';
 import ListItem from './ListItem';
 import FullWidthDiv from './FullWidthDiv';
 import Result from './Result';
@@ -41,7 +42,7 @@ class Pareto extends React.Component {
               prs: []
             });
           }
-          
+
           this.setState(prevState => ({
             data: pareto,
             all: [...pareto],
@@ -74,7 +75,7 @@ class Pareto extends React.Component {
   handleFileTypeOptionChange = changeEvent => {
     let { all, selectedLanguage, options } = this.state;
     const selectedFileType = changeEvent.target.value;
-    
+
     let data = [ ...all ].filter(({ filename }) => {
       const { articleType, language } = this.getFilenameOptions(filename);
       let condition;
@@ -86,7 +87,7 @@ class Pareto extends React.Component {
           condition = articleType === selectedFileType;
         } else if (!options[selectedFileType][selectedLanguage]) {
           condition = articleType === selectedFileType
-          selectedLanguage = 'all';    
+          selectedLanguage = 'all';
         } else {
           condition = articleType === selectedFileType && language === selectedLanguage
         }
@@ -95,7 +96,7 @@ class Pareto extends React.Component {
     });
     this.setState(prevState => ({ data, selectedFileType, selectedLanguage }));
   }
-  
+
   handleLanguageOptionChange = changeEvent => {
     const { all, selectedFileType } = this.state;
     const selectedLanguage = changeEvent.target.value;
@@ -122,7 +123,7 @@ class Pareto extends React.Component {
     const [_, articleType, language] = filenameReplacement.match(regex) || [];
     return { articleType, language };
   }
-  
+
   render() {
     const { data, options, selectedFileType, selectedLanguage } = this.state;
 
@@ -134,7 +135,7 @@ class Pareto extends React.Component {
       const fileOnMaster = `https://github.com/freeCodeCamp/freeCodeCamp/blob/master/${filename}`;
       return (
         <Result key={filename}>
-          <span style={filenameTitle}>{filename}</span>{' '}
+          <span style={filenameTitle}>{addBreaks(filename)}</span>{' '}
           <a href={fileOnMaster} rel="noopener noreferrer" target="_blank">
             (File on Master)
           </a>
@@ -146,7 +147,7 @@ class Pareto extends React.Component {
         </Result>
       );
     });
-    
+
     let fileTypeOptions = Object.keys(options).map(articleType => articleType);
     const typeOptions = [ 'all', ...fileTypeOptions].map((type) => (
       <FilterOption
@@ -159,10 +160,10 @@ class Pareto extends React.Component {
       {type.charAt().toUpperCase() + type.slice(1)}
       </FilterOption>
     ));
-    
+
     let languageOptions = null;
     if (selectedFileType !== 'all') {
-      let languages = Object.keys(options[selectedFileType]);    
+      let languages = Object.keys(options[selectedFileType]);
       languages = ['all', ...languages.sort()];
       languageOptions = languages.map(language => (
         <FilterOption
@@ -174,7 +175,7 @@ class Pareto extends React.Component {
         >
         {language.charAt().toUpperCase() + language.slice(1)}
         </FilterOption>
-      ));    
+      ));
     }
     return (
       <FullWidthDiv>
