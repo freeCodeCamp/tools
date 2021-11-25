@@ -4,10 +4,7 @@ a comment and "status: needs update" label to any PR with guide articles which
 have frontmatter issues.
 */
 
-const config = require('../config');
-
 const fetch = require('node-fetch');
-
 const { getPRs, getUserInput, getFiles } = require('../lib/get-prs');
 const { addLabels, addComment } = require('../lib/pr-tasks');
 const { rateLimiter, ProcessingLog } = require('../lib/utils');
@@ -17,6 +14,11 @@ const {
 const {
   createErrorMsg
 } = require('../lib/validation/guide-folder-checks/create-error-msg');
+
+const {
+  github: { freeCodeCampRepo, defaultBase },
+  oneoff: { productionRun }
+} = require('../config');
 
 const allowedLangDirNames = [
   'arabic',
@@ -29,7 +31,7 @@ const allowedLangDirNames = [
 
 const log = new ProcessingLog('all-frontmatter-checks');
 
-const labeler = async(
+const labeler = async (
   number,
   prFiles,
   currentLabels,
@@ -43,11 +45,11 @@ const labeler = async(
   const existingLabels = currentLabels.map(({ name }) => name);
 
   /* only adds needed labels which are NOT currently on the PR. */
-  const newLabels = Object.keys(labelsToAdd).filter(label => {
+  const newLabels = Object.keys(labelsToAdd).filter((label) => {
     return !existingLabels.includes(label);
   });
   if (newLabels.length) {
-    if (config.oneoff.productionRun) {
+    if (productionRun) {
       addLabels(number, newLabels);
       await rateLimiter();
     }
@@ -68,11 +70,11 @@ const checkPath = (fullPath, fileContent) => {
   return errorMsgs.concat(frontMatterErrMsgs);
 };
 
-const guideFolderChecks = async(number, prFiles, user) => {
+const guideFolderChecks = async (number, prFiles, user) => {
   let prErrors = [];
   for (let { filename: fullPath, raw_url: fileUrl } of prFiles) {
     let newErrors;
-    if ((/^guide\//).test(fullPath)) {
+    if (/^guide\//.test(fullPath)) {
       const response = await fetch(fileUrl);
       const fileContent = await response.text();
       newErrors = checkPath(fullPath, fileContent);
@@ -84,7 +86,7 @@ const guideFolderChecks = async(number, prFiles, user) => {
 
   if (prErrors.length) {
     const comment = createErrorMsg(prErrors, user);
-    if (config.oneoff.productionRun) {
+    if (productionRun) {
       await addComment(number, comment);
       await rateLimiter();
     }
@@ -94,10 +96,20 @@ const guideFolderChecks = async(number, prFiles, user) => {
   }
 };
 
-(async() => {
-  const { totalPRs, firstPR, lastPR } = await getUserInput();
+(async () => {
+  const { totalPRs, firstPR, lastPR } = await getUserInput(
+    freeCodeCampRepo,
+    defaultBase
+  );
   const prPropsToGet = ['number', 'labels', 'user'];
-  const { openPRs } = await getPRs(totalPRs, firstPR, lastPR, prPropsToGet);
+  const { openPRs } = await getPRs(
+    freeCodeCampRepo,
+    defaultBase,
+    totalPRs,
+    firstPR,
+    lastPR,
+    prPropsToGet
+  );
 
   log.start();
   console.log('Starting frontmatter checks process...');
@@ -109,8 +121,8 @@ const guideFolderChecks = async(number, prFiles, user) => {
         labels: currentLabels,
         user: { login: username }
       } = openPRs[count];
-      
-      const prFiles = await getFiles(number);
+
+      const prFiles = await getFiles(freeCodeCampRepo, number);
       if (count > 4000) {
         await rateLimiter(2350);
       }
@@ -139,7 +151,7 @@ const guideFolderChecks = async(number, prFiles, user) => {
     log.finish();
     console.log('Successfully completed frontmatter checks');
   })
-  .catch(err => {
+  .catch((err) => {
     log.finish();
     console.log(err);
   });
