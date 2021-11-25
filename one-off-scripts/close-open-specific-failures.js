@@ -1,4 +1,8 @@
-const config = require('../config');
+const {
+  github: { freeCodeCampRepo, defaultBase },
+  oneoff: { productionRun }
+} = require('../lib/config');
+
 const { closeOpen } = require('../lib/pr-tasks');
 const { openJSONFile, ProcessingLog, rateLimiter } = require('../lib/utils');
 
@@ -21,14 +25,14 @@ const getUserInput = async () => {
 };
 
 (async () => {
-  const { prs } = await getUserInput();
+  const { prs } = await getUserInput(freeCodeCampRepo, defaultBase);
   return prs;
 })()
-  .then(async prs => {
+  .then(async (prs) => {
     for (let { number, errorDesc } of prs) {
       if (errorDesc !== 'unknown error') {
         log.add(number, { number, closedOpened: true, errorDesc });
-        if (config.oneoff.productionRun) {
+        if (productionRun) {
           await closeOpen(number);
           await rateLimiter(90000);
         }
@@ -41,7 +45,7 @@ const getUserInput = async () => {
     log.finish();
     console.log('closing/reopening of PRs complete');
   })
-  .catch(err => {
+  .catch((err) => {
     log.finish();
     console.log(err);
   });
